@@ -1,20 +1,22 @@
 package com.eds.netaclon.puzzlegraph.item;
 
+import com.eds.netaclon.puzzlegraph.Puzzle;
+
 public class Key implements Item{
 
-	private final Lockable lock;
+	private final Lockable lockable;
 
 	public Key(Lockable lockedDoor) {
-		this.lock= lockedDoor;
+		this.lockable= lockedDoor;
 	}
 
-	public Lockable getLock() {
-		return lock;
+	public Lockable getLockable(Puzzle puz) {
+		return puz.getLockable(lockable.getName());
 	}
 
 
 	public String getDescription() {
-		return "key to "+(lock==null?"nothing":lock.getName());
+		return "key to "+(lockable==null?"nothing":lockable.getName());
 		
 	}
 

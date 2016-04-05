@@ -8,9 +8,8 @@ public interface Lockable extends Item {
 	
 	boolean isLocked();
 
-	default Key addKey()
-	{	Key k =new Key(this);
-		this.getKeys().add(k);
+	default Key addKey(Key k)
+	{	this.getKeys().add(k);
 		return k;
 	}
 

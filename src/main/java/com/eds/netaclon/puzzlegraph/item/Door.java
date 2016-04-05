@@ -11,10 +11,12 @@ public class Door implements Lockable,Serializable{
 	private List<Key> keys;
 	private String outRoomName;
 	private String inRoomName;
+	private String name;
 
-	public Door(Room outRoom, Room inRoom) {
+	public Door(Room outRoom, Room inRoom, String name) {
 		this.outRoomName=outRoom.getName();
 		this.inRoomName = inRoom.getName();
+		this.name = name;
 		keys = new LinkedList<>();
 	}
 
@@ -34,11 +36,11 @@ public class Door implements Lockable,Serializable{
 	{ return !keys.isEmpty();}
 
 	public String getDescription() {
-		return "door from " + outRoomName + " to " + inRoomName;
+		return "door "+name+" from " + outRoomName + " to " + inRoomName;
 	}
 
 	@Override
 	public String getName() {
-		return getDescription();
+		return  name;
 	}
 }

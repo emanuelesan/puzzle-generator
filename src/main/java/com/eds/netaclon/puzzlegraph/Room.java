@@ -24,14 +24,6 @@ public class Room implements Serializable {
         this.setName(name);
     }
 
-    public Door connectInwardRoom(Room room) {
-        Door door = new Door(this, room);
-        doors.add(door);
-        room.getDoors().add(door);
-        return door;
-
-    }
-
     public List<Door> getDoors() {
         return doors;
     }

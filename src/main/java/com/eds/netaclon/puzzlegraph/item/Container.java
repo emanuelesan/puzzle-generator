@@ -14,15 +14,10 @@ public class Container implements Lockable {
     private List<Item> items;
     private String name;
 
-    private Container() {
+    public Container(Item item, String name) {
         items = new LinkedList<>();
         keys = new LinkedList<>();
-        name = "container"+ SequenceGenerator.incrementAndGet("container");
-    }
-
-
-    public Container(Item item) {
-        this();
+        this.name = name;
         items.add(item);
     }
 

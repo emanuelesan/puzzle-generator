@@ -56,7 +56,7 @@ public class LockedContainerPlot implements PlotSeeder {
 
         public void germinate() {
             room.getItems().remove(item);
-            Container container = new Container(item);
+            Container container =puz.createContainer(item);
             room.getItems().add(container);
 
             lock(container);
@@ -74,7 +74,7 @@ public class LockedContainerPlot implements PlotSeeder {
             // for that key and randomly choose one room.
             Optional.of(item)
                     .filter(item->item instanceof Key)
-                    .map(item->((Key)item).getLock())
+                    .map(item->((Key)item).getLockable(puz))
                     .filter(lockable -> lockable instanceof Door)
                     .ifPresent(door ->
                             {
@@ -91,7 +91,7 @@ public class LockedContainerPlot implements PlotSeeder {
 
             if (roomsToHideKeyIn.size()>0) {
                 Room selectedRoom = roomsToHideKeyIn.get(rand.nextInt(roomsToHideKeyIn.size()));
-                Key k = container.addKey();
+                Key k = container.addKey(puz.createKey(container));
                 selectedRoom.getItems().add(k);
             }
         }
