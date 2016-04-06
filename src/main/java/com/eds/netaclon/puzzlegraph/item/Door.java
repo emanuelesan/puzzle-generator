@@ -2,22 +2,27 @@ package com.eds.netaclon.puzzlegraph.item;
 
 import com.eds.netaclon.puzzlegraph.Puzzle;
 import com.eds.netaclon.puzzlegraph.Room;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Door implements Lockable,Serializable{
-	private List<Key> keys;
-	private String outRoomName;
-	private String inRoomName;
-	private String name;
+    @JsonProperty
+    private List<String> keyNames;
+    @JsonProperty
+    private String outRoomName;
+    @JsonProperty
+    private String inRoomName;
+    @JsonProperty
+    private String name;
 
 	public Door(Room outRoom, Room inRoom, String name) {
 		this.outRoomName=outRoom.getName();
 		this.inRoomName = inRoom.getName();
 		this.name = name;
-		keys = new LinkedList<>();
+		keyNames = new LinkedList<>();
 	}
 
 	public Room getOutRoom(Puzzle puz) {
@@ -31,11 +36,11 @@ public class Door implements Lockable,Serializable{
 
 	@Override
 	public void addKey(Key k) {
-		keys.add(k);
+		keyNames.add(k.getName());
 	}
 
 	public boolean isLocked()
-	{ return !keys.isEmpty();}
+	{ return !keyNames.isEmpty();}
 
 	public String getDescription() {
 		return "door "+name+" from " + outRoomName + " to " + inRoomName;

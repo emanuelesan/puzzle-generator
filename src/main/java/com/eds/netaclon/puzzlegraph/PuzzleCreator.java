@@ -9,7 +9,6 @@ import com.eds.netaclon.puzzlegraph.plotseed.PlotSeeder;
 import com.eds.netaclon.puzzlegraph.plotseed.impl.LockedContainerPlot;
 import com.eds.netaclon.puzzlegraph.plotseed.impl.LockedDoorPlot;
 import com.eds.netaclon.puzzlegraph.plotseed.PlotSeed;
-import com.eds.netaclon.puzzlegraph.renderer.PuzzleZeldaLikeRenderer;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.FlockingRoomsPositioner;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.FlockingRoomsRenderer;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.CorridorConnector;
@@ -50,19 +49,16 @@ public class PuzzleCreator {
 
 	public static void main(String[] args) {
 
-        Random rand = new Random(2);
+        Random rand = new Random(3);
 
-		Puzzle puz = createPuzzleGraph(rand,120);
+		Puzzle puz = createPuzzleGraph(rand,10);
 		logger.info(puz.printInfo());
-		PuzzleZeldaLikeRenderer.render(puz).show();
+
 		FlockingRoomsPositioner positioner = new FlockingRoomsPositioner(puz);
 		TickWiseOperator corridorConnector= new CorridorConnector(puz,positioner.getRectsByRoom());
 		TickWiseOperator doorCreator = new DoorCreator(positioner.getRectsByRoom());
 		FlockingRoomsRenderer flockingRoomsRenderer = new FlockingRoomsRenderer(puz,positioner,corridorConnector,doorCreator);
 		flockingRoomsRenderer.show();
-
-
-
 
 	}
 
