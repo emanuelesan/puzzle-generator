@@ -21,9 +21,9 @@ public class Container implements Lockable {
         items.add(item);
     }
 
-
-    public List<Key> getKeys() {
-        return keys;
+    @Override
+    public void addKey(Key k) {
+        keys.add(k);
     }
 
     public boolean isLocked() {
@@ -31,7 +31,7 @@ public class Container implements Lockable {
     }
 
     public String getDescription() {
-        return getName()+" : "+ items.stream().map(item->item.getDescription()).collect(Collectors.joining(",","[","]"));
+        return "container:"+getName()+" "+ items.stream().map(item->item.getDescription()).collect(Collectors.joining(",","[","]"));
     }
 
     @Override

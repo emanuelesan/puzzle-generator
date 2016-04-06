@@ -127,7 +127,7 @@ public class Puzzle {
 
 	public Key createKey(Lockable lockable) {
 		String keyName = "K" + SequenceGenerator.incrementAndGet("key");
-		Key key = new Key(lockable);
+		Key key = new Key(lockable,keyName);
 		keyMap.put(keyName,key);
 		return key;
 	}

@@ -91,7 +91,8 @@ public class LockedContainerPlot implements PlotSeeder {
 
             if (roomsToHideKeyIn.size()>0) {
                 Room selectedRoom = roomsToHideKeyIn.get(rand.nextInt(roomsToHideKeyIn.size()));
-                Key k = container.addKey(puz.createKey(container));
+                Key k =puz.createKey(container);
+                container.addKey(k);
                 selectedRoom.getItems().add(k);
             }
         }

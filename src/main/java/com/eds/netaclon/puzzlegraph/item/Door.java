@@ -28,8 +28,10 @@ public class Door implements Lockable,Serializable{
 		return puz.getRoom(inRoomName);
 	}
 
-	public List<Key> getKeys() {
-		return keys;
+
+	@Override
+	public void addKey(Key k) {
+		keys.add(k);
 	}
 
 	public boolean isLocked()

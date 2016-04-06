@@ -5,9 +5,11 @@ import com.eds.netaclon.puzzlegraph.Puzzle;
 public class Key implements Item{
 
 	private final Lockable lockable;
+	private final String name;
 
-	public Key(Lockable lockedDoor) {
+	public Key(Lockable lockedDoor,String name) {
 		this.lockable= lockedDoor;
+		this.name = name;
 	}
 
 	public Lockable getLockable(Puzzle puz) {
@@ -16,12 +18,12 @@ public class Key implements Item{
 
 
 	public String getDescription() {
-		return "key to "+(lockable==null?"nothing":lockable.getName());
+		return "key:"+name+" to "+(lockable==null?"nothing":lockable.getName());
 		
 	}
 
 	@Override
 	public String getName() {
-		return getDescription();
+		return name;
 	}
 }

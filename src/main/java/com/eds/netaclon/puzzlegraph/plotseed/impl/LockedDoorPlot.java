@@ -67,7 +67,8 @@ public class LockedDoorPlot implements PlotSeeder {
 
 		public void germinate() {
 			reshapePuzzle();
-			k =lockedDoor.addKey(puzzle.createKey(lockedDoor));
+			k =puzzle.createKey(lockedDoor);
+			lockedDoor.addKey(k);
 			hideKey();
 		}
 
