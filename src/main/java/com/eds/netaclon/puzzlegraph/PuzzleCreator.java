@@ -50,7 +50,7 @@ public class PuzzleCreator {
 
         Random rand = new Random(2);
 
-		Puzzle puz = createPuzzleGraph(rand,20);
+		Puzzle puz = createPuzzleGraph(rand,120);
 		logger.info(puz.printInfo());
 		FlockingRoomsPositioner positioner = new FlockingRoomsPositioner(puz);
 		TickWiseOperator corridorConnector= new CorridorConnector(puz,positioner.getRectsByRoom());

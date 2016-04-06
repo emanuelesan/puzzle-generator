@@ -63,9 +63,9 @@ public class FlockingRoomsRenderer implements Visualizer {
         try {
             ImageShow imageShow = new ImageShow(image);
             imageShow.show();
-
+            long lastRender = System.currentTimeMillis();
             while (true) {
-                Thread.sleep(16);
+
 
                 if (operators.peek().isDone())
                 {
@@ -82,21 +82,24 @@ public class FlockingRoomsRenderer implements Visualizer {
                 }
                 operators.peek().tick();
 
-                centerCamera();
-                g.clearRect(0, 0, (int) width, (int) height);
+                if (System.currentTimeMillis()>lastRender+16) {
+                    centerCamera();
+                    g.clearRect(0, 0, (int) width, (int) height);
 
-                drawGrid();
+                    drawGrid();
 
-                rectsByRoom.entrySet().forEach(entry -> drawRectangle(g, entry.getValue(), colorOf(entry.getKey())));
-                g.setColor(Color.ORANGE);
-                rectsByRoom.keySet().stream().flatMap(roomName -> puz.getRoom(roomName).getDoors().stream())
-                        .forEach(door -> drawDoor(g, door));
-                imageShow.repaint();
+                    rectsByRoom.entrySet().forEach(entry -> drawRectangle(g, entry.getValue(), colorOf(entry.getKey())));
+                    g.setColor(Color.ORANGE);
+                    rectsByRoom.keySet().stream().flatMap(roomName -> puz.getRoom(roomName).getDoors().stream())
+                            .forEach(door -> drawDoor(g, door));
+                    imageShow.repaint();
+                    lastRender=System.currentTimeMillis();
+                }
 
 
             }
 
-        } catch (IOException|InterruptedException  e) {
+        } catch (IOException  e) {
             System.out.println("colors");
         }
 

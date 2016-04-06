@@ -37,8 +37,8 @@ public class CorridorConnector implements TickWiseOperator {
     }
 
     private Rectangle createCorridor(Door door) {
-        Rectangle inRect = rectsByRoom.get(door.getInRoom(puz));
-        Rectangle outRect = rectsByRoom.get(door.getOutRoom(puz));
+        Rectangle inRect = rectsByRoom.get(door.getInRoom(puz).getName());
+        Rectangle outRect = rectsByRoom.get(door.getOutRoom(puz).getName());
         Rectangle corridor = inRect.inBetween(outRect);
 
         for (Rectangle rec : rectsByRoom.values()) {

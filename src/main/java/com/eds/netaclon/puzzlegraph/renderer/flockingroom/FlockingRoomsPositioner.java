@@ -28,6 +28,12 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
     private int maxIterations;
     private boolean done;
 
+    double startPushClose ;
+    double startPushAway  ;
+
+    double endPushClose  ;
+    double endPushAway  ;
+
     public FlockingRoomsPositioner(Puzzle puz) {
         this.puz = puz;
         Random random = new Random(0);
@@ -51,8 +57,31 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
                         }
 
                 ));
+
+        startPushClose = .5;
+        startPushAway = 1;
+
+        endPushClose = 0;
+        endPushAway = .1;
+        maxIterations = 20 * 60*(int)(Math.ceil(rectsByRoom.size()/10));
     }
 
+    @Override
+    public void tick() {
+
+        double pushCloseFactor = Math.max(startPushClose + (endPushClose - startPushClose) * ((double) step / maxIterations), 0);
+        double pushAwayFactor =  Math.max(startPushAway + (endPushAway - startPushAway) * ((double) step / maxIterations), 0);
+        double snapFactor = Math.max(0,(double)( step - maxIterations)/maxIterations);
+        balanceDistances(pushCloseFactor, pushAwayFactor,snapFactor);
+
+        step++;
+        done = step>=maxIterations+5*60;
+
+    }
+
+    public boolean isDone() {
+        return done;
+    }
 
     public Map<String, Rectangle> getRectsByRoom() {
         return rectsByRoom;
@@ -60,7 +89,7 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
 
 
 
-    public void balanceDistances(double pushCloseFactor, double pushAwayFactor,double snapFactor) {
+    private void balanceDistances(double pushCloseFactor, double pushAwayFactor,double snapFactor) {
         rectsByRoom.entrySet().forEach(entry ->
                 {
                     Rectangle rec = entry.getValue();
@@ -79,7 +108,7 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
     private void snapToGrid(Rectangle rec,double snapFactor) {
         Vector2 push = new Vector2(-rec.x() + Math.round(rec.x()),
                 -rec.y() + Math.round(rec.y()));
-        rec.push(push.times(ALPHA*snapFactor));
+        rec.push(push.times(ALPHA * snapFactor));
     }
 
     private void pushAwayOverlapped(Rectangle rec, double fact) {
@@ -112,26 +141,5 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
     }
 
 
-    @Override
-    public void tick() {
-        double startPushClose = .5;
-        double startPushAway = 1;
 
-        double endPushClose = 0;
-        double endPushAway = .1;
-        maxIterations = 20 * 60;
-
-        double pushCloseFactor = Math.max(startPushClose + (endPushClose - startPushClose) * ((double) step / maxIterations), 0);
-        double pushAwayFactor =  Math.max(startPushAway + (endPushAway - startPushAway) * ((double) step / maxIterations), 0);
-        double snapFactor = Math.max(0,(double)( step - maxIterations)/maxIterations);
-        balanceDistances(pushCloseFactor, pushAwayFactor,snapFactor);
-
-        step++;
-        done = step>=maxIterations+5*60;
-
-    }
-
-    public boolean isDone() {
-        return done;
-    }
 }
