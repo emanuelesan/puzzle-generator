@@ -8,15 +8,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Room implements Serializable {
-    private Door pathToEnd;
-    private List<Door> doors;
-    private List<Item> items;
+    private String pathToEnd;
+    private List<String> doorNames;
+    private List<String> itemNames;
     private int depth;
     private String name;
 
     public Room() {
-        doors = new LinkedList<>();
-        items = new LinkedList<>();
+        doorNames = new LinkedList<>();
+        itemNames = new LinkedList<>();
     }
 
     public Room(String name) {
@@ -24,13 +24,14 @@ public class Room implements Serializable {
         this.setName(name);
     }
 
-    public List<Door> getDoors() {
-        return doors;
+    public List<String> getDoorNames() {
+
+        return doorNames;
     }
 
 
-    public List<Item> getItems() {
-        return items;
+    public List<String> getItemNames() {
+        return itemNames;
     }
 
     public int getDepth() {
@@ -52,19 +53,19 @@ public class Room implements Serializable {
 
     public String getDescription() {
         String itemDescriptions = "";
-        for (Item item : items) {
-            itemDescriptions += ", " + item.getDescription();
+        for (String item : itemNames) {
+            itemDescriptions += ", " + item;
         }
 
         return name + ", depth: " + this.getDepth() + ", " + itemDescriptions;
     }
 
-    public Door getPathToEnd() {
+    public String getPathToEnd() {
         return pathToEnd;
     }
 
     public void setPathToEnd(Door pathToEnd) {
-        this.pathToEnd = pathToEnd;
+        this.pathToEnd = pathToEnd.getName();
     }
 
     @Override
@@ -78,5 +79,21 @@ public class Room implements Serializable {
             return getName().equals(((Room) obj).getName());
         }
         return super.equals(obj);
+    }
+
+    public void addDoor(Door door) {
+        doorNames.add(door.getName());
+    }
+
+    public void removeDoor(Door d) {
+        doorNames.remove(d.getName());
+    }
+
+    public void addItem(Item k) {
+        itemNames.add(k.getName());
+    }
+
+    public void removeItem(Item item) {
+        itemNames.remove(item.getName());
     }
 }

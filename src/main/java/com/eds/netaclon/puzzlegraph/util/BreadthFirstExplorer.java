@@ -21,7 +21,7 @@ public class BreadthFirstExplorer {
 		List<Room> explored = new LinkedList<Room>();
 		unexplored.addAll(puz.getAllRooms());
 		while (!unexplored.isEmpty()) {
-			doorQueue.addAll(currentRoom.getDoors());
+			doorQueue.addAll(puz.getDoors(currentRoom));
 			op.operate(currentRoom, puz, explored, unexplored);
 			unexplored.remove(currentRoom);
 			explored.add(0,currentRoom);

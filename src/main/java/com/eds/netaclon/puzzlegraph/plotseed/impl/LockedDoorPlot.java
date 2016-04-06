@@ -1,6 +1,5 @@
 package com.eds.netaclon.puzzlegraph.plotseed.impl;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -52,7 +51,7 @@ public class LockedDoorPlot implements PlotSeeder {
 	{
 
 		Room r = d.getOutRoom(puz);
-		return (r.getDoors().size()<PuzzleCreationConstants.MAX_DOORS_PER_ROOM);
+		return (r.getDoorNames().size()<PuzzleCreationConstants.MAX_DOORS_PER_ROOM && !d.isLocked());
 	}
 
 	private class  LockedDoorPlotSeed implements PlotSeed
@@ -76,19 +75,14 @@ public class LockedDoorPlot implements PlotSeeder {
 		private void hideKey() {
 			Room r = lockedDoor.getOutRoom(puzzle);
 			Room toHideRoom=puzzle.carveRoomFrom(r);
-			toHideRoom.getItems().add(k);
+			toHideRoom.addItem(k);
 		}
-
-		private void reshapePuzzle() {
-				reshapeWay1();
-		}
-
 		/**add another room where the lockedDoor is. new lockedDoor is the innermost.
 		 the key will be hidden in an adjacent room.
 		 */
-		private void reshapeWay1() {
+		private void reshapePuzzle() {
 			Room r =puzzle.addRoom(lockedDoor);
-			for (Door d:r.getDoors())
+			for (Door d:puzzle.getDoors(r))
 			{
 				if (d.getInRoom(puzzle) != r)
 				{	lockedDoor=d;

@@ -18,8 +18,8 @@ import com.eds.netaclon.puzzlegraph.util.MetaNode;
  */
 public class MinimumSpanningTreeCalculator implements Operator {
 
-	private List<MetaNode>  rooms = new LinkedList<MetaNode>();
-	private Map<Room,MetaNode> metaNodes  = new HashMap<Room,MetaNode>();
+	private List<MetaNode>  rooms = new LinkedList<>();
+	private Map<Room,MetaNode> metaNodes  = new HashMap<>();
 	private MetaNode root;
 	private Puzzle puz;
 
@@ -48,7 +48,7 @@ public class MinimumSpanningTreeCalculator implements Operator {
 	}
 
 	private MetaNode findRelative(Room currentRoom) {
-		for (Door d:currentRoom.getDoors())
+		for (Door d:puz.getDoors(currentRoom))
 		{	Room otherRoom = d.getOutRoom(puz);
 			if(metaNodes.containsKey(otherRoom))
 			{	return metaNodes.get(otherRoom);
@@ -57,22 +57,13 @@ public class MinimumSpanningTreeCalculator implements Operator {
 		return null;
 	}
 
-	public List<MetaNode> getRooms() {
-		return rooms;
-	}
 
-	public void setRooms(List<MetaNode> rooms) {
-		this.rooms = rooms;
-	}
 
 	public MetaNode getRoot() {
 		return root;
 	}
 
-	public void setRoot(MetaNode root) {
-		this.root = root;
-	}
-	
+
 	public Map<Room,MetaNode> getMetaNodes()
 	{
 		return metaNodes;

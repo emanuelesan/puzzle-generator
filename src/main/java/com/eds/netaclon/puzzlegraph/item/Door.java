@@ -45,4 +45,12 @@ public class Door implements Lockable,Serializable{
 	public String getName() {
 		return  name;
 	}
+
+	public String getInRoomName() {
+		return inRoomName;
+	}
+
+	public String getOutRoomName() {
+		return outRoomName;
+	}
 }

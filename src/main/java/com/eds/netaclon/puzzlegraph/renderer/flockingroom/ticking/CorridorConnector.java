@@ -9,7 +9,6 @@ import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Vector2;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * creates corridors, which are new rooms actually, added to the puzzle,
@@ -60,11 +59,9 @@ public class CorridorConnector implements TickWiseOperator {
     }
 
     private List<Door> getCorridorsNeeded() {
-        return rectsByRoom
-                .keySet()
+        return puz.getDoorMap()
+                .values()
                 .stream()
-                .flatMap(roomName ->puz.getRoom( roomName).getDoors().stream())
-                .distinct()
                 .filter(this::areRoomsTooFar)
                 .collect(Collectors.toList());
     }

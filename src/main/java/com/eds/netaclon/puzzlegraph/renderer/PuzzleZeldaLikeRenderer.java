@@ -7,10 +7,8 @@ import com.eds.netaclon.graphics.IntPosition;
 import com.eds.netaclon.puzzlegraph.item.Door;
 import com.eds.netaclon.puzzlegraph.Puzzle;
 import com.eds.netaclon.puzzlegraph.Room;
-import com.eds.netaclon.puzzlegraph.operator.DepthCalculator;
 import com.eds.netaclon.puzzlegraph.graphic.GenericGraphicSeed;
 import com.eds.netaclon.puzzlegraph.tile.Tile;
-import com.eds.netaclon.puzzlegraph.util.BreadthFirstExplorer;
 
 public class PuzzleZeldaLikeRenderer implements Visualizer {
 
@@ -78,7 +76,7 @@ public class PuzzleZeldaLikeRenderer implements Visualizer {
 		}
 		for (Room room:roomMap.keySet())
 		{	
-			if(room.getItems().size()>0||roomCollapser.nextDouble()<ROOM_ANYWAY)
+			if(room.getItemNames().size()>0||roomCollapser.nextDouble()<ROOM_ANYWAY)
 			{printRoomSmart(renderedPuzzle,room,new IntPosition(lowerx,lowery));}
 			else
 			{printCorridors(renderedPuzzle,room,new IntPosition(lowerx,lowery));}
@@ -141,7 +139,7 @@ public class PuzzleZeldaLikeRenderer implements Visualizer {
 	private boolean isAccessibleFrom(Room room, IntPosition p)
 	{	
 		Room otherRoom = posMap.get(p);
-		for (Door d:room.getDoors())
+		for (Door d:puz.getDoors(room))
 		{	if(otherRoom==d.getInRoom(puz)||otherRoom==d.getOutRoom(puz))
 				return true;
 		}

@@ -76,7 +76,7 @@ public class BridgeFinder {
 			lowerLabel = Math.min(Lv.get(mn),lowerLabel);
 			higherLabel = Math.max(Hv.get(mn),higherLabel);
 		}
-		for (Door d:node.getRoom().getDoors())
+		for (Door d:puz.getDoors(node.getRoom()))
 		{	Room otherRoom = d.getInRoom(puz)!=node.getRoom()? d.getInRoom(puz):d.getOutRoom(puz);
 			MetaNode associatedMn=spanningTreeCalculator.getMetaNodes().get(otherRoom);
 			if (!associatedMn.getConnectedNodes().contains(node))
@@ -100,7 +100,7 @@ public class BridgeFinder {
 				Room vRoom = node.getRoom();
 				Room wRoom = w.getRoom();
 				
-				for (Door d:vRoom.getDoors())
+				for (Door d:puz.getDoors(vRoom))
 				{	if ((d.getOutRoom(puz)==vRoom && d.getInRoom(puz)==wRoom)
 						||(d.getOutRoom(puz)==wRoom && d.getInRoom(puz)==vRoom))
 					{bridges.add(d); break;

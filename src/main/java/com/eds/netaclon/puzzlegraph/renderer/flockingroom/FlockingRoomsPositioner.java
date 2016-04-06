@@ -50,7 +50,7 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
                             }
                             int xMin = (int) (pos.x * Math.max(X_MAX, Y_MAX));
                             int yMin = (int) (pos.y * Math.max(X_MAX, Y_MAX));
-                            int sizeMult = room.getItems().size() + room.getDoors().size();
+                            int sizeMult = room.getItemNames().size() + room.getDoorNames().size();
                             return new Rectangle(xMin, yMin,
                                     xMin + 2 * Math.floor((4 + sizeMult * random.nextDouble()) / 7 * X_MAX),
                                     yMin + 2 * Math.floor((4 + sizeMult * random.nextDouble()) / 7 * Y_MAX));
@@ -63,7 +63,7 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
 
         endPushClose = 0;
         endPushAway = .1;
-        maxIterations = 20 * 60*(int)(Math.ceil(rectsByRoom.size()/10));
+        maxIterations = 20 * 60*(int)(Math.floor(rectsByRoom.size()/10)+1);
     }
 
     @Override
@@ -86,8 +86,6 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
     public Map<String, Rectangle> getRectsByRoom() {
         return rectsByRoom;
     }
-
-
 
     private void balanceDistances(double pushCloseFactor, double pushAwayFactor,double snapFactor) {
         rectsByRoom.entrySet().forEach(entry ->
@@ -119,11 +117,9 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
     }
 
     private void pushDoorsClose(Rectangle rec, Room room, double factor) {
-        room
-                .getDoors()
+       puz.getDoors( room)
                 .stream()
-                .map(door -> door.getInRoom(puz) == room ? door.getOutRoom(puz) : door.getInRoom(puz))
-                .map(Room::getName)
+                .map(door -> door.getInRoomName() .equals( room.getName()) ? door.getOutRoomName() : door.getInRoomName())
                 .map(rectsByRoom::get)
                 .forEach(rec1 -> {
                     //push torwards rec1 above,below,left or right

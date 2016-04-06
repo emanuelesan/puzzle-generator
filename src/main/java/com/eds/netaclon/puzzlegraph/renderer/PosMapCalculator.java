@@ -50,7 +50,7 @@ public class PosMapCalculator {
                 roomMap.put(r, new IntPosition(0, 0));
                 posMap.put(new IntPosition(0, 0), r);
             } else {
-                for (Door d : r.getDoors()) {
+                for (Door d : puz.getDoors(r)) {
                     Room otherRoom = d.getInRoom(puz) != r ? d.getInRoom(puz) : d.getOutRoom(puz);
 
                     if (roomMap.containsKey(otherRoom)) {
@@ -77,10 +77,9 @@ public class PosMapCalculator {
                             break;
                         }else
                         {
-                            List<Room> connectedDoors = otherRoom
-                                    .getDoors()
+                            List<Room> connectedDoors = puz.getDoors(otherRoom)
                                     .stream()
-                                    .map(door -> door.getInRoom(puz).equals(otherRoom) ? d.getOutRoom(puz) : d.getInRoom(puz))
+                                    .map(door -> door.getInRoomName().equals(otherRoom.getName()) ? d.getOutRoom(puz) : d.getInRoom(puz))
                                     .collect(Collectors.toList());
                             //keep a position for later.
                             Stream.of(otherRoomPosition.up(), otherRoomPosition.down(), otherRoomPosition.left(), otherRoomPosition.right())

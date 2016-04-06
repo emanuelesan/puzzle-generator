@@ -34,7 +34,7 @@ public class PartitionCalculator implements Operator{
 
         if (! forbiddenRoom.equals(currentRoom)
                 &&
-                currentRoom.getDoors().stream().map(door->door.getOutRoom(puz)).anyMatch(room->startPartition.contains(room))
+               puz.getDoors(currentRoom).stream().map(door->door.getOutRoom(puz)).anyMatch(startPartition::contains)
                 )
         {
             startPartition.add(currentRoom);

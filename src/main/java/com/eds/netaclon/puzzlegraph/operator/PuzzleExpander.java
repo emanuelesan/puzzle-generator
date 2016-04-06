@@ -43,7 +43,7 @@ public class PuzzleExpander implements Operator {
 			puz.carveRoomFrom(currentRoom);
 		}
 		LinkedList<Door> doorListCopy = new LinkedList<Door>();
-		doorListCopy.addAll(currentRoom.getDoors());// using the actual list
+		doorListCopy.addAll(puz.getDoors(currentRoom));// using the actual list
 													// would cause a concurrency
 													// problem.
 		for (Door d : doorListCopy) {// only change already explored doors

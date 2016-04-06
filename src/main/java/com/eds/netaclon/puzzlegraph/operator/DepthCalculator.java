@@ -19,7 +19,7 @@ public class DepthCalculator implements Operator {
 
 	public void operate(Room currentRoom, Puzzle puz, List<Room> explored,
 			List<Room> unexplored) {
-		for (Door d : currentRoom.getDoors()) {
+		for (Door d :puz.getDoors( currentRoom)) {
 			Room otherRoom = d.getInRoom(puz) != currentRoom ? d.getInRoom(puz) : d
 					.getOutRoom(puz);
 			int otherRoomDepth = otherRoom.getDepth();

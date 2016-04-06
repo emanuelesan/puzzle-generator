@@ -63,7 +63,7 @@ public class FlockingRoomsRenderer implements Visualizer {
         try {
             ImageShow imageShow = new ImageShow(image);
             imageShow.show();
-            long lastRender = System.currentTimeMillis();
+            long lastRender = 0L;
             while (true) {
 
 
@@ -90,7 +90,7 @@ public class FlockingRoomsRenderer implements Visualizer {
 
                     rectsByRoom.entrySet().forEach(entry -> drawRectangle(g, entry.getValue(), colorOf(entry.getKey())));
                     g.setColor(Color.ORANGE);
-                    rectsByRoom.keySet().stream().flatMap(roomName -> puz.getRoom(roomName).getDoors().stream())
+                    puz.getDoorMap().values()
                             .forEach(door -> drawDoor(g, door));
                     imageShow.repaint();
                     lastRender=System.currentTimeMillis();
@@ -207,8 +207,8 @@ public class FlockingRoomsRenderer implements Visualizer {
     }
 
     private void drawDoor(Graphics2D g, Door door) {
-        Rectangle rec1 = rectsByRoom.get(door.getInRoom(puz).getName());
-        Rectangle rec2 = rectsByRoom.get(door.getOutRoom(puz).getName());
+        Rectangle rec1 = rectsByRoom.get(door.getInRoomName());
+        Rectangle rec2 = rectsByRoom.get(door.getOutRoomName());
         g.drawLine(rnd(transformX(rec1.x()))
                 ,rnd(transformY(rec1.y()))
                 ,rnd(transformX(rec2.x()))

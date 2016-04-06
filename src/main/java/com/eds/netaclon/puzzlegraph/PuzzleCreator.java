@@ -9,6 +9,7 @@ import com.eds.netaclon.puzzlegraph.plotseed.PlotSeeder;
 import com.eds.netaclon.puzzlegraph.plotseed.impl.LockedContainerPlot;
 import com.eds.netaclon.puzzlegraph.plotseed.impl.LockedDoorPlot;
 import com.eds.netaclon.puzzlegraph.plotseed.PlotSeed;
+import com.eds.netaclon.puzzlegraph.renderer.PuzzleZeldaLikeRenderer;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.FlockingRoomsPositioner;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.FlockingRoomsRenderer;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.CorridorConnector;
@@ -27,6 +28,7 @@ public class PuzzleCreator {
 		this.seedBag=seedBag;
         this.rand = rand;
 	}
+
 
 
 	
@@ -52,6 +54,7 @@ public class PuzzleCreator {
 
 		Puzzle puz = createPuzzleGraph(rand,120);
 		logger.info(puz.printInfo());
+		PuzzleZeldaLikeRenderer.render(puz).show();
 		FlockingRoomsPositioner positioner = new FlockingRoomsPositioner(puz);
 		TickWiseOperator corridorConnector= new CorridorConnector(puz,positioner.getRectsByRoom());
 		TickWiseOperator doorCreator = new DoorCreator(positioner.getRectsByRoom());
