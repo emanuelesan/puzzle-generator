@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Door implements Lockable,Serializable{
+public class Door implements Lockable{
     @JsonProperty
     private List<String> keyNames;
     @JsonProperty
@@ -17,6 +17,10 @@ public class Door implements Lockable,Serializable{
     private String inRoomName;
     @JsonProperty
     private String name;
+
+    public Door()
+    {
+    }
 
 	public Door(Room outRoom, Room inRoom, String name) {
 		this.outRoomName=outRoom.getName();
@@ -39,10 +43,10 @@ public class Door implements Lockable,Serializable{
 		keyNames.add(k.getName());
 	}
 
-	public boolean isLocked()
+	public boolean locked()
 	{ return !keyNames.isEmpty();}
 
-	public String getDescription() {
+	public String description() {
 		return "door "+name+" from " + outRoomName + " to " + inRoomName;
 	}
 
@@ -57,5 +61,9 @@ public class Door implements Lockable,Serializable{
 
 	public String getOutRoomName() {
 		return outRoomName;
+	}
+
+	public List<String> getKeyNames() {
+		return keyNames;
 	}
 }

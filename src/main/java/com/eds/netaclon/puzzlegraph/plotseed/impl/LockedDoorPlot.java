@@ -51,7 +51,7 @@ public class LockedDoorPlot implements PlotSeeder {
 	{
 
 		Room r = d.getOutRoom(puz);
-		return (r.getDoorNames().size()<PuzzleCreationConstants.MAX_DOORS_PER_ROOM && !d.isLocked());
+		return (r.getDoorNames().size()<PuzzleCreationConstants.MAX_DOORS_PER_ROOM && !d.locked());
 	}
 
 	private class  LockedDoorPlotSeed implements PlotSeed

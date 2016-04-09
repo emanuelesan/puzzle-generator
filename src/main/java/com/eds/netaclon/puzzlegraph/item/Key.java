@@ -18,7 +18,7 @@ public class Key implements Item {
         return puz.getLockable(lockableName);
     }
 
-    public String getDescription() {
+    public String description() {
         return "key:" + name + " to " + lockableName;
 
     }

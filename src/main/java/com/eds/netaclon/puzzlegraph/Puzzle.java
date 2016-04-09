@@ -52,7 +52,7 @@ public class Puzzle {
 	 * @return a room which has two doors, his outRoom will be the former door's outroom,
 	 * the same for the inroom.
 	 *
-	 * @param d the door that will be transformed into a room.
+	 * @param d the door that will be transformed into a room. keys will be preserved for the inward door.
 	 */
 	public Room addRoom(Door d)
 	{	Room newRoom = addRoom();
@@ -61,7 +61,8 @@ public class Puzzle {
 		Room inRoom = d.getInRoom(this);
 		Door fromOutDoor =connectInwardRoom(outRoom,newRoom);
 		Door toInDoor = connectInwardRoom(newRoom,inRoom);
-		if (d.getName().equals(outRoom.getPathToEnd()))
+		d.getKeyNames().forEach(keyName->toInDoor.addKey(keyMap.get(keyName)));
+		if (d.getName().equals(outRoom.getPathToEndName()))
 		{outRoom.setPathToEnd(fromOutDoor);
 		 newRoom.setPathToEnd(toInDoor);
 		}
@@ -105,7 +106,7 @@ public class Puzzle {
 		return end;
 	}
 
-	public Collection<Room> getAllRooms() {
+	public Collection<Room> allRooms() {
 		return roomMap.values();
 	}
 
@@ -113,7 +114,7 @@ public class Puzzle {
 	public String printInfo() {
 		StringBuilder stringAppender= new StringBuilder();
 		for (Room room : roomMap.values()) {
-			stringAppender.append(room.getDescription()).append("\n");
+			stringAppender.append(room.description()).append("\n");
 		}
 		return stringAppender.toString();
 	}

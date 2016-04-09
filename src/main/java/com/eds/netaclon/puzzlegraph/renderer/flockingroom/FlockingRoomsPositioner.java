@@ -40,9 +40,9 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
         PosMapCalculator posCa = new PosMapCalculator();
         Map<Room, IntPosition> roomIntPositionMap = posCa.calculateRoomMap(puz);
 
-        rectsByRoom = puz.getAllRooms().stream()
+        rectsByRoom = puz.allRooms().stream()
                 .collect(Collectors.toMap(
-                        room -> room.getName(),
+                        Room::getName,
                         room -> {
                             IntPosition pos = roomIntPositionMap.get(room);
                             if (pos == null) {
@@ -75,7 +75,7 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
         balanceDistances(pushCloseFactor, pushAwayFactor,snapFactor);
 
         step++;
-        done = step>=maxIterations+5*60;
+        done = step>=maxIterations+15*60;
 
     }
 
@@ -112,7 +112,7 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
     private void pushAwayOverlapped(Rectangle rec, double fact) {
         rectsByRoom.values().stream()
                 .map(rec1 -> rec.minusPos(rec1)
-                        .times(ALPHA * fact * rec1.intersection(rec)))
+                        .times(ALPHA * fact * rec1.intersectionArea(rec)))
                 .forEach(rec::push);
     }
 

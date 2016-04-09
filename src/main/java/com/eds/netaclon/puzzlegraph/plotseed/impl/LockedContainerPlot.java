@@ -32,7 +32,7 @@ public class LockedContainerPlot implements PlotSeeder {
 
     public List<PlotSeed> semina(Puzzle puz) {
         return puz
-                .getAllRooms()
+                .allRooms()
                 .stream()
                 .flatMap(room -> puz.getItems(room.getItemNames()).stream().filter(item -> !(item instanceof Container)).map(item -> new LockedContainerPlotSeed(room, item, puz)))
                 .filter(n -> rand.nextDouble() < germinationChance).collect(Collectors.toList());
@@ -66,7 +66,7 @@ public class LockedContainerPlot implements PlotSeeder {
         private void lock(Container container) {
 
 
-            List<Room> roomsToHideKeyIn = new LinkedList<>(puz.getAllRooms());
+            List<Room> roomsToHideKeyIn = new LinkedList<>(puz.allRooms());
             roomsToHideKeyIn.remove(room);
             //container contains only one item right now.
             // if item is a key, find all rooms the bisection reachable from the start

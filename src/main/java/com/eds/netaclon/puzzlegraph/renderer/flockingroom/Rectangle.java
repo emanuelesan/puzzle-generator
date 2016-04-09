@@ -1,22 +1,26 @@
 package com.eds.netaclon.puzzlegraph.renderer.flockingroom;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 import java.io.Serializable;
 
 /**
  * Created by emanuelesan on 31/03/16.
+ *
+ * aaah the rectangle class, an evergreen.
  */
 public class Rectangle implements Serializable {
-
-    private double x, y;
-    private double xMin;
-    private double yMin;
-    private double xMax;
-    private double yMax;
+    @JsonProperty
+    private double x, y,xMin,yMin,xMax,yMax;
 
     private double xVel;
     private double yVel;
 
+    public Rectangle()
+    {}
+
     public Rectangle(double xMin, double yMin, double xMax, double yMax) {
+        this();
         this.xMin = xMin;
         this.yMin = yMin;
         this.xMax = xMax;
@@ -38,14 +42,14 @@ public class Rectangle implements Serializable {
         yVel = 0;
     }
 
-    public double intersection(Rectangle r) {
+    public double intersectionArea(Rectangle r) {
         if (intersects(r)) {
-            return intersectionRect(r).area();
+            return intersection(r).area();
         }
         return 0;
     }
 
-    private Rectangle intersectionRect(Rectangle r) {
+    private Rectangle intersection(Rectangle r) {
         return new Rectangle(Math.max(xMin, r.xMin), Math.max(yMin, r.yMin), Math.min(xMax, r.xMax), Math.min(yMax, r.yMax));
     }
 
@@ -53,7 +57,7 @@ public class Rectangle implements Serializable {
         return new Vector2(this.x - r.x, this.y - r.y);
     }
 
-    protected boolean intersects(Rectangle r) {
+    public boolean intersects(Rectangle r) {
         return r.xMax >= xMin && r.xMin <= xMax && r.yMax >= yMin && r.yMin <= yMax;
     }
 
@@ -73,7 +77,46 @@ public class Rectangle implements Serializable {
 
     public Rectangle inBetween(Rectangle r)
     {
-        return intersectionRect(r);
+        Rectangle verticalInbetween = new Rectangle(Math.max(xMin, r.xMin), Math.min(yMax, r.yMax), Math.min(xMax, r.xMax), Math.max(yMin, r.yMin));
+        if (verticalInbetween.area()<0)
+        {       //return horizontalInbetween
+            return new Rectangle(Math.min(xMax, r.xMax), Math.max(yMin, r.yMin), Math.max(xMin, r.xMin), Math.min(yMax, r.yMax));
+
+        }
+        return verticalInbetween;
+
+    }
+
+    public Rectangle subtractHorizontal(Rectangle rec) {
+
+        if (this.intersects(rec))
+        {
+            Rectangle toReduce = this.intersection(rec);
+            return new Rectangle(Math.max(xMin, toReduce.xMin),yMin, Math.min(xMax, toReduce.xMax), yMax);
+
+        }
+        return this.copy();
+    }
+
+    /**
+     * shave off columns, vertically.
+     * @param rec
+     * @return
+     */
+    public Rectangle subtractVertical(Rectangle rec) {
+
+        if (this.intersects(rec))
+        {
+            Rectangle toReduce = this.intersection(rec);
+           return new Rectangle(xMin, Math.max(yMin, toReduce.yMin),xMax, Math.min(yMax, toReduce.yMax));
+
+        }
+        return this.copy();
+    }
+
+
+    private Rectangle copy() {
+        return new Rectangle(xMin,yMin,xMax,yMax);
     }
 
     public double width() {
@@ -105,38 +148,20 @@ public class Rectangle implements Serializable {
 
     /**
      * center will remain still, corners will move!
-     * @param ratio
+     * @param ratio factor by which distance from center will be changed.
      */
     public void scale(double ratio) {
-        xMin=x - (x-xMin)*ratio;
-        xMax=x + (xMax-x)*ratio;
-
-        yMin=y - (y-yMin)*ratio;
-        yMax=y + (yMax-y)*ratio;
+      scale(ratio,ratio);
 
     }
 
-    public double getX() {
-        return x;
-    }
 
-    public double getY() {
-        return y;
-    }
+    public void scale(double xRatio, double yRatio) {
+        xMin=x - (x-xMin)*xRatio;
+        xMax=x + (xMax-x)*xRatio;
 
-    public double getxMin() {
-        return xMin;
-    }
+        yMin=y - (y-yMin)*yRatio;
+        yMax=y + (yMax-y)*yRatio;
 
-    public double getyMin() {
-        return yMin;
-    }
-
-    public double getxMax() {
-        return xMax;
-    }
-
-    public double getyMax() {
-        return yMax;
     }
 }

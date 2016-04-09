@@ -5,10 +5,12 @@ import com.eds.netaclon.puzzlegraph.Room;
 import com.eds.netaclon.puzzlegraph.item.Door;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Rectangle;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Vector2;
+import javaslang.Tuple2;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * creates corridors, which are new rooms actually, added to the puzzle,
@@ -25,48 +27,49 @@ public class CorridorConnector implements TickWiseOperator {
 
     @Override
     public void tick() {
-        List<Door> corridorsNeeded = getCorridorsNeeded();
-        corridorsNeeded.stream().forEach(door ->
+        List<Tuple2<Door, Direction>> corridorsNeeded = computeCorridors();
+        corridorsNeeded.forEach(tuple ->
                 {
-                    Rectangle corridor = createCorridor(door);
-                    Room room = puz.addRoom(door);
+                    Rectangle corridor = createCorridor(tuple._1(), tuple._2());
+                    Room room = puz.addRoom(tuple._1());
                     rectsByRoom.put(room.getName(), corridor);
                 }
         );
     }
 
-    private Rectangle createCorridor(Door door) {
+    private Rectangle createCorridor(Door door, Direction direction) {
         Rectangle inRect = rectsByRoom.get(door.getInRoom(puz).getName());
         Rectangle outRect = rectsByRoom.get(door.getOutRoom(puz).getName());
         Rectangle corridor = inRect.inBetween(outRect);
 
         for (Rectangle rec : rectsByRoom.values()) {
             if (rec != outRect && inRect != rec) {
-                corridor = subtract(corridor, rec);
+                corridor = direction == Direction.VERTICAL ? corridor.subtractHorizontal(rec) : corridor.subtractVertical(rec);
             }
+        }
+        if (direction == Direction.VERTICAL) {
+            corridor.scale(1D / corridor.width(), 1);
+        } else {
+            corridor.scale(1, 1D / corridor.height());
         }
         return corridor;
     }
 
-    private Rectangle subtract(Rectangle corridor, Rectangle rec) {
-
-        return corridor;
-    }
 
     @Override
     public boolean isDone() {
         return true;
     }
 
-    private List<Door> getCorridorsNeeded() {
+    private List<Tuple2<Door, Direction>> computeCorridors() {
         return puz.getDoorMap()
                 .values()
                 .stream()
-                .filter(this::areRoomsTooFar)
+                .flatMap(this::areRoomsTooFar)
                 .collect(Collectors.toList());
     }
 
-    private boolean areRoomsTooFar(Door door) {
+    private Stream<Tuple2<Door, Direction>> areRoomsTooFar(Door door) {
         Rectangle inRect = rectsByRoom.get(door.getInRoom(puz).getName());
         Rectangle outRect = rectsByRoom.get(door.getOutRoom(puz).getName());
         Vector2 roomDims = new Vector2(
@@ -77,7 +80,21 @@ public class CorridorConnector implements TickWiseOperator {
                         Math.abs(inRect.x() - outRect.x()),
                         Math.abs(inRect.y() - outRect.y()));
         Vector2 deficit = distance.minus(roomDims);
-        return (Math.round(deficit.x) > 0 && Math.round(deficit.y) > 0);
+
+        if (Math.round(deficit.x) > 0 && Math.round(deficit.y) < 0) {
+            return Stream.of(new Tuple2<>(door, Direction.HORIZONTAL));
+        }
+
+
+        if (Math.round(deficit.x) < 0 && Math.round(deficit.y) > 0) {
+            return Stream.of(new Tuple2<>(door, Direction.VERTICAL));
+        }
+
+        return Stream.empty();
+    }
+
+    private enum Direction {
+        HORIZONTAL, VERTICAL
     }
 
 }

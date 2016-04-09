@@ -8,9 +8,9 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Room implements Serializable {
+public class Room implements Item {
     @JsonProperty
-    private String pathToEnd;
+    private String pathToEndName;
     @JsonProperty
     private List<String> doorNames;
     @JsonProperty
@@ -57,7 +57,7 @@ public class Room implements Serializable {
     }
 
 
-    public String getDescription() {
+    public String description() {
         String itemDescriptions = "";
         for (String item : itemNames) {
             itemDescriptions += ", " + item;
@@ -66,12 +66,12 @@ public class Room implements Serializable {
         return name + ", depth: " + this.getDepth() + ", " + itemDescriptions;
     }
 
-    public String getPathToEnd() {
-        return pathToEnd;
+    public String getPathToEndName() {
+        return pathToEndName;
     }
 
     public void setPathToEnd(Door pathToEnd) {
-        this.pathToEnd = pathToEnd.getName();
+        this.pathToEndName = pathToEnd.getName();
     }
 
     @Override

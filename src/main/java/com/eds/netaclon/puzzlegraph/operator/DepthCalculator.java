@@ -10,7 +10,7 @@ public class DepthCalculator implements Operator {
 
 
 	public void init(Puzzle puz) {
-		for (Room r : puz.getAllRooms()) {
+		for (Room r : puz.allRooms()) {
 			r.setDepth(Integer.MAX_VALUE);
 		}
 		puz.getStart().setDepth(0);

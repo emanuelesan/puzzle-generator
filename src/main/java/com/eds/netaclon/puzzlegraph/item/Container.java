@@ -1,6 +1,5 @@
 package com.eds.netaclon.puzzlegraph.item;
 
-import com.eds.netaclon.puzzlegraph.util.SequenceGenerator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.util.LinkedList;
@@ -30,12 +29,12 @@ public class Container implements Lockable {
         keyNames.add(k.getName());
     }
 
-    public boolean isLocked() {
+    public boolean locked() {
         return !keyNames.isEmpty();
     }
 
-    public String getDescription() {
-        return "container:"+getName()+" "+ items.stream().map(item->item.getDescription()).collect(Collectors.joining(",","[","]"));
+    public String description() {
+        return "container:"+getName()+" "+ items.stream().map(item->item.description()).collect(Collectors.joining(",","[","]"));
     }
 
     @Override

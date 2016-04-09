@@ -33,7 +33,7 @@ public class PosMapCalculator {
     public Map<Room, IntPosition> calculateRoomMap(Puzzle puz) {
         Map<Room, IntPosition> roomMap = new HashMap<Room, IntPosition>();
         BreadthFirstExplorer.attraversaPuz(puz, new DepthCalculator());
-        List<Room> rooms = new LinkedList<>(puz.getAllRooms());
+        List<Room> rooms = new LinkedList<>(puz.allRooms());
         Collections.sort(rooms, new Comparator<Room>() {
 
             public int compare(Room o1, Room o2) {

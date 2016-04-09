@@ -28,13 +28,8 @@ public class PuzzleCreator {
         this.rand = rand;
 	}
 
-
-
-	
 	public Puzzle createPuzzle(int expansionCycles)
 	{	Puzzle puz = new Puzzle();
-
-
 
 		for (int cycle = 0; cycle < expansionCycles; cycle++) {
 
@@ -51,7 +46,7 @@ public class PuzzleCreator {
 
         Random rand = new Random(3);
 
-		Puzzle puz = createPuzzleGraph(rand,10);
+		Puzzle puz = createPuzzleGraph(rand,100);
 		logger.info(puz.printInfo());
 
 		FlockingRoomsPositioner positioner = new FlockingRoomsPositioner(puz);

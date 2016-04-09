@@ -19,7 +19,7 @@ public class BreadthFirstExplorer {
 		Queue<Door> doorQueue = new LinkedList<Door>();
 		List<Room> unexplored = new LinkedList<Room>();
 		List<Room> explored = new LinkedList<Room>();
-		unexplored.addAll(puz.getAllRooms());
+		unexplored.addAll(puz.allRooms());
 		while (!unexplored.isEmpty()) {
 			doorQueue.addAll(puz.getDoors(currentRoom));
 			op.operate(currentRoom, puz, explored, unexplored);

@@ -1,8 +1,10 @@
 package com.eds.netaclon.puzzlegraph.item;
 
-public interface Item {
+import java.io.Serializable;
 
-	String getDescription();
+public interface Item extends Serializable {
+
+	String description();
 	String getName();
 
 }

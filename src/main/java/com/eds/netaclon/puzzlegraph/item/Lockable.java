@@ -4,7 +4,7 @@ public interface Lockable extends Item {
 	
 	void addKey(Key k);
 	
-	boolean isLocked();
+	boolean locked();
 
 
 }
