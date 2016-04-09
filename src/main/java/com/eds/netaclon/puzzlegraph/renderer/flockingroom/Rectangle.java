@@ -78,7 +78,7 @@ public class Rectangle implements Serializable {
     public Rectangle inBetween(Rectangle r)
     {
         Rectangle verticalInbetween = new Rectangle(Math.max(xMin, r.xMin), Math.min(yMax, r.yMax), Math.min(xMax, r.xMax), Math.max(yMin, r.yMin));
-        if (verticalInbetween.area()<0)
+        if (verticalInbetween.height()<0 || verticalInbetween.width()<0)
         {       //return horizontalInbetween
             return new Rectangle(Math.min(xMax, r.xMax), Math.max(yMin, r.yMin), Math.max(xMin, r.xMin), Math.min(yMax, r.yMax));
 
@@ -92,8 +92,11 @@ public class Rectangle implements Serializable {
         if (this.intersects(rec))
         {
             Rectangle toReduce = this.intersection(rec);
-            return new Rectangle(Math.max(xMin, toReduce.xMin),yMin, Math.min(xMax, toReduce.xMax), yMax);
-
+            if (toReduce.xMin-xMin>xMax-toReduce.xMax)
+            {
+                return new Rectangle(xMin,yMin, toReduce.xMin, yMax);
+            }
+            return new Rectangle(toReduce.xMax,yMin, xMax, yMax);
         }
         return this.copy();
     }
@@ -108,8 +111,11 @@ public class Rectangle implements Serializable {
         if (this.intersects(rec))
         {
             Rectangle toReduce = this.intersection(rec);
-           return new Rectangle(xMin, Math.max(yMin, toReduce.yMin),xMax, Math.min(yMax, toReduce.yMax));
-
+            if (toReduce.yMin-yMin>yMax-toReduce.yMax)
+            {
+                return new Rectangle(xMin,yMin, xMax, toReduce.yMin);
+            }
+            return new Rectangle(xMin,toReduce.yMax, xMax, yMax);
         }
         return this.copy();
     }

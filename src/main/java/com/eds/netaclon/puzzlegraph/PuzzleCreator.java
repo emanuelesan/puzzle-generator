@@ -17,52 +17,50 @@ import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperat
 
 
 public class PuzzleCreator {
-	private static final Logger logger = Logger.getLogger("logger");
+    private static final Logger logger = Logger.getLogger("logger");
 
 
-	private final List<PlotSeeder> seedBag;
+    private final List<PlotSeeder> seedBag;
     private final Random rand;
 
     public PuzzleCreator(List<PlotSeeder> seedBag, Random rand) {
-		this.seedBag=seedBag;
+        this.seedBag = seedBag;
         this.rand = rand;
-	}
+    }
 
-	public Puzzle createPuzzle(int expansionCycles)
-	{	Puzzle puz = new Puzzle();
+    public Puzzle createPuzzle(int expansionCycles) {
+        Puzzle puz = new Puzzle();
+        for (int cycle = 0; cycle < expansionCycles; cycle++) {
 
-		for (int cycle = 0; cycle < expansionCycles; cycle++) {
+            List<PlotSeed> seeds = seedBag.get(rand.nextInt(seedBag.size())).semina(puz);
+            if (!seeds.isEmpty()) {
+                seeds.get(rand.nextInt(seeds.size())).germinate();
+            }
+        }
+        return puz;
+    }
 
-			List<PlotSeed> seeds =seedBag.get(rand.nextInt(seedBag.size())).semina(puz);
-			if (!seeds.isEmpty())
-				{seeds.get(rand.nextInt(seeds.size())).germinate();}
-		}
-		return puz;
-		
-	}
-
-
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
         Random rand = new Random(3);
 
-		Puzzle puz = createPuzzleGraph(rand,100);
-		logger.info(puz.printInfo());
+        Puzzle puz = createPuzzleGraph(rand, 50);
+        logger.info(puz.printInfo());
 
-		FlockingRoomsPositioner positioner = new FlockingRoomsPositioner(puz);
-		TickWiseOperator corridorConnector= new CorridorConnector(puz,positioner.getRectsByRoom());
-		TickWiseOperator doorCreator = new DoorCreator(positioner.getRectsByRoom());
-		FlockingRoomsRenderer flockingRoomsRenderer = new FlockingRoomsRenderer(puz,positioner,corridorConnector,doorCreator);
-		flockingRoomsRenderer.show();
+        FlockingRoomsPositioner positioner = new FlockingRoomsPositioner(puz);
+        TickWiseOperator corridorConnector = new CorridorConnector(puz, positioner.getRectsByRoom());
+        TickWiseOperator doorCreator = new DoorCreator(positioner.getRectsByRoom());
+        FlockingRoomsRenderer flockingRoomsRenderer = new FlockingRoomsRenderer(puz, positioner, corridorConnector, doorCreator);
+        flockingRoomsRenderer.show();
 
-	}
+    }
 
-	private static Puzzle createPuzzleGraph(Random rand,int complexity) {
-		List<PlotSeeder> seedBag = new LinkedList<>();
-		seedBag.add(new LockedDoorPlot(rand));
-		seedBag.add(new LockedContainerPlot(rand));
-		PuzzleCreator creator = new PuzzleCreator(seedBag,rand);
-		return creator.createPuzzle(complexity);
-	}
+    private static Puzzle createPuzzleGraph(Random rand, int complexity) {
+        List<PlotSeeder> seedBag = new LinkedList<>();
+        seedBag.add(new LockedDoorPlot(rand));
+        seedBag.add(new LockedContainerPlot(rand));
+        PuzzleCreator creator = new PuzzleCreator(seedBag, rand);
+        return creator.createPuzzle(complexity);
+    }
 
 }
