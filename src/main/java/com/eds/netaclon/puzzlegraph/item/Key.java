@@ -5,11 +5,15 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 public class Key implements Item {
     @JsonProperty
-    private final String lockableName;
+    private  String lockableName;
     @JsonProperty
-    private final String name;
+    private  String name;
+
+    public Key()
+    {}
 
     public Key(Lockable lockedDoor, String name) {
+        this();
         this.lockableName = lockedDoor.getName();
         this.name = name;
     }

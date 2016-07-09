@@ -15,4 +15,6 @@ public interface TickWiseOperator {
 
     boolean isDone();
 
+    boolean isPuzzleStillValid();
+
 }

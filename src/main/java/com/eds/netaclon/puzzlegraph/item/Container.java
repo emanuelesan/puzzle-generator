@@ -13,15 +13,19 @@ public class Container implements Lockable {
     @JsonProperty
     private List<String> keyNames;
     @JsonProperty
-    private List<Item> items;
+    private List<String> itemNames;
     @JsonProperty
     private String name;
 
+    public Container() {
+    }
+
     public Container(Item item, String name) {
-        items = new LinkedList<>();
+        this();
+        itemNames = new LinkedList<>();
         keyNames = new LinkedList<>();
         this.name = name;
-        items.add(item);
+        itemNames.add(item.getName());
     }
 
     @Override
@@ -34,7 +38,7 @@ public class Container implements Lockable {
     }
 
     public String description() {
-        return "container:"+getName()+" "+ items.stream().map(item->item.description()).collect(Collectors.joining(",","[","]"));
+        return "container:" + getName() + " " + itemNames.stream().collect(Collectors.joining(",", "[", "]"));
     }
 
     @Override

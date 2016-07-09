@@ -3,6 +3,7 @@ package com.eds.netaclon.puzzlegraph.renderer.flockingroom;
 import com.eds.netaclon.graphics.IntPosition;
 import com.eds.netaclon.puzzlegraph.Puzzle;
 import com.eds.netaclon.puzzlegraph.Room;
+import com.eds.netaclon.puzzlegraph.graphic.GraphicPuzzle;
 import com.eds.netaclon.puzzlegraph.item.Door;
 import com.eds.netaclon.puzzlegraph.operator.DepthCalculator;
 import com.eds.netaclon.puzzlegraph.renderer.ImageShow;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by emanuelesan on 30/03/16.
@@ -33,19 +35,19 @@ public class FlockingRoomsRenderer implements Visualizer {
     private final BufferedImage image;
     private final Graphics2D g;
     private final Puzzle puz;
+    private final GraphicPuzzle graphicPuzzle;
     private Rectangle view;
     private double height,width;
     private  Map<String, Rectangle> rectsByRoom;
     private final Queue<TickWiseOperator> operators;
 
 
-    public FlockingRoomsRenderer(Puzzle puz,FlockingRoomsPositioner flockingRoomsPositioner,TickWiseOperator corridorConnector, TickWiseOperator doorCreator) {
-        this.puz = puz;
-        rectsByRoom=flockingRoomsPositioner.getRectsByRoom();
-        operators = new LinkedList<>();
-        operators.add(flockingRoomsPositioner);
-        operators.add(corridorConnector);
-        operators.add(doorCreator);
+    public FlockingRoomsRenderer(GraphicPuzzle gp,TickWiseOperator... operators) {
+        this.graphicPuzzle = gp;
+        this.puz = gp.getPuzzle();
+        rectsByRoom=gp.getRectsByRoom();
+        this.operators = new LinkedList<>();
+        Stream.of(operators).forEachOrdered(operator->this.operators.add(operator));
 
         this. view=determineView();
         determineViewDimensions();
@@ -71,11 +73,9 @@ public class FlockingRoomsRenderer implements Visualizer {
                 {
                     logger.info("removed operator, welcome new operator! ");
                     try {
-                        String jsonMap = new ObjectMapper().writeValueAsString(rectsByRoom);
-                        logger.info("map: " + jsonMap);
+                        String jsonMap = new ObjectMapper().writeValueAsString(graphicPuzzle);
 
-                        String jsonpuz = new ObjectMapper().writeValueAsString(puz);
-                        logger.info("puz: " + jsonpuz);
+                        logger.info("puz--> " + jsonMap);
                     }catch (Exception e)
                     {logger.info(e.getMessage());}
                     operators.poll();
@@ -183,9 +183,7 @@ public class FlockingRoomsRenderer implements Visualizer {
             return Color.GREEN;
         if( roomName.equalsIgnoreCase("end"))
             return Color.RED;
-
         return Color.WHITE;
-
     }
 
     private void centerCamera() {
@@ -203,7 +201,6 @@ public class FlockingRoomsRenderer implements Visualizer {
         double heightRation =   (bBox.height()+4)/view.height();
         double ratio = widthRatio<heightRation?heightRation:widthRatio;
         view.scale((3+ratio)/4);
-
     }
 
     private void drawDoor(Graphics2D g, Door door) {
@@ -214,6 +211,5 @@ public class FlockingRoomsRenderer implements Visualizer {
                 ,rnd(transformX(rec2.x()))
                 ,rnd(transformY(rec2.y())));
     }
-
 
 }

@@ -2,6 +2,7 @@ package com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking;
 
 import com.eds.netaclon.puzzlegraph.Puzzle;
 import com.eds.netaclon.puzzlegraph.Room;
+import com.eds.netaclon.puzzlegraph.graphic.GraphicPuzzle;
 import com.eds.netaclon.puzzlegraph.item.Door;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Rectangle;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Vector2;
@@ -20,9 +21,9 @@ public class CorridorConnector implements TickWiseOperator {
     private final Map<String, Rectangle> rectsByRoom;
     private final Puzzle puz;
 
-    public CorridorConnector(Puzzle puz, Map<String, Rectangle> rectsByRoom) {
-        this.rectsByRoom = rectsByRoom;
-        this.puz = puz;
+    public CorridorConnector(GraphicPuzzle gp) {
+        this.rectsByRoom = gp.getRectsByRoom();
+        this.puz = gp.getPuzzle();
     }
 
     @Override
@@ -58,6 +59,11 @@ public class CorridorConnector implements TickWiseOperator {
 
     @Override
     public boolean isDone() {
+        return true;
+    }
+
+    @Override
+    public boolean isPuzzleStillValid() {
         return true;
     }
 

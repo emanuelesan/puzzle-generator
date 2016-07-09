@@ -3,6 +3,7 @@ package com.eds.netaclon.puzzlegraph.renderer.flockingroom;
 import com.eds.netaclon.graphics.IntPosition;
 import com.eds.netaclon.puzzlegraph.Puzzle;
 import com.eds.netaclon.puzzlegraph.Room;
+import com.eds.netaclon.puzzlegraph.graphic.GraphicPuzzle;
 import com.eds.netaclon.puzzlegraph.renderer.PosMapCalculator;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperator;
 
@@ -34,13 +35,13 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
     double endPushClose  ;
     double endPushAway  ;
 
-    public FlockingRoomsPositioner(Puzzle puz) {
-        this.puz = puz;
+    public FlockingRoomsPositioner(GraphicPuzzle gp) {
+        this.puz = gp.getPuzzle();
         Random random = new Random(0);
         PosMapCalculator posCa = new PosMapCalculator();
         Map<Room, IntPosition> roomIntPositionMap = posCa.calculateRoomMap(puz);
 
-        rectsByRoom = puz.allRooms().stream()
+        Map<String, Rectangle> collect = puz.allRooms().stream()
                 .collect(Collectors.toMap(
                         Room::getName,
                         room -> {
@@ -52,11 +53,14 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
                             int yMin = (int) (pos.y * Math.max(X_MAX, Y_MAX));
                             int sizeMult = room.getItemNames().size() + room.getDoorNames().size();
                             return new Rectangle(xMin, yMin,
-                                    xMin + 2 * Math.floor((4 + sizeMult * random.nextDouble()) / 7 * X_MAX),
-                                    yMin + 2 * Math.floor((4 + sizeMult * random.nextDouble()) / 7 * Y_MAX));
+                                    xMin + 2 * Math.floor((sizeMult+4 * random.nextDouble()) / 7 * X_MAX),
+                                    yMin + 2 * Math.floor((sizeMult +4 * random.nextDouble()) / 7 * Y_MAX));
                         }
 
                 ));
+        rectsByRoom =gp.getRectsByRoom();
+        rectsByRoom.putAll(collect);
+
 
         startPushClose = .5;
         startPushAway = 1;
@@ -81,6 +85,11 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
 
     public boolean isDone() {
         return done;
+    }
+
+    @Override
+    public boolean isPuzzleStillValid() {
+        return true;
     }
 
     public Map<String, Rectangle> getRectsByRoom() {

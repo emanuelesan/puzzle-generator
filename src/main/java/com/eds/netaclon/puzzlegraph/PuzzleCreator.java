@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
+import com.eds.netaclon.puzzlegraph.graphic.GraphicPuzzle;
 import com.eds.netaclon.puzzlegraph.plotseed.PlotSeeder;
 import com.eds.netaclon.puzzlegraph.plotseed.impl.LockedContainerPlot;
 import com.eds.netaclon.puzzlegraph.plotseed.impl.LockedDoorPlot;
@@ -44,13 +45,18 @@ public class PuzzleCreator {
 
         Random rand = new Random(3);
 
-        Puzzle puz = createPuzzleGraph(rand, 50);
+        Puzzle puz = createPuzzleGraph(rand, 20);
         logger.info(puz.printInfo());
+        GraphicPuzzle graphicPuzzle = new GraphicPuzzle(puz);
 
-        FlockingRoomsPositioner positioner = new FlockingRoomsPositioner(puz);
-        TickWiseOperator corridorConnector = new CorridorConnector(puz, positioner.getRectsByRoom());
+        FlockingRoomsPositioner positioner = new FlockingRoomsPositioner(graphicPuzzle);
+        //at this point, the puzzle must be checked if it's correct.
+
+        TickWiseOperator corridorConnector = new CorridorConnector(graphicPuzzle);
+        //at this point, the puzzle must be checked if it's correct.
+
         TickWiseOperator doorCreator = new DoorCreator(positioner.getRectsByRoom());
-        FlockingRoomsRenderer flockingRoomsRenderer = new FlockingRoomsRenderer(puz, positioner, corridorConnector, doorCreator);
+        FlockingRoomsRenderer flockingRoomsRenderer = new FlockingRoomsRenderer(graphicPuzzle, positioner, corridorConnector, doorCreator);
         flockingRoomsRenderer.show();
 
     }

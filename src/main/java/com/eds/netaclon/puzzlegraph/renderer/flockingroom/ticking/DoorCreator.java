@@ -21,4 +21,9 @@ public class DoorCreator implements TickWiseOperator {
     public boolean isDone() {
         return false;
     }
+
+    @Override
+    public boolean isPuzzleStillValid() {
+        return true;
+    }
 }
