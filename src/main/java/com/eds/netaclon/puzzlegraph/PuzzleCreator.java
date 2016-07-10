@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 import com.eds.netaclon.puzzlegraph.graphic.GraphicPuzzle;
+import com.eds.netaclon.puzzlegraph.renderer.flockingroom.InitialPositioner;
 import com.eds.netaclon.puzzlegraph.plotseed.PlotSeeder;
 import com.eds.netaclon.puzzlegraph.plotseed.impl.LockedContainerPlot;
 import com.eds.netaclon.puzzlegraph.plotseed.impl.LockedDoorPlot;
@@ -43,11 +44,13 @@ public class PuzzleCreator {
 
     public static void main(String[] args) {
 
-        Random rand = new Random(3);
+        Random rand = new Random(1232134);
 
         Puzzle puz = createPuzzleGraph(rand, 20);
         logger.info(puz.printInfo());
         GraphicPuzzle graphicPuzzle = new GraphicPuzzle(puz);
+
+        TickWiseOperator initialPositioner = new InitialPositioner(graphicPuzzle,rand);
 
         FlockingRoomsPositioner positioner = new FlockingRoomsPositioner(graphicPuzzle);
         //at this point, the puzzle must be checked if it's correct.

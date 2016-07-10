@@ -123,6 +123,15 @@ public class Puzzle {
 		return roomMap.get(roomName);
 	}
 
+	public Room getOtherRoom(String doorName,Room room)
+    {
+        Door door = this.getDoor(doorName);
+
+        return door.getInRoomName().equals(room.getName())?
+                door.getOutRoom(this)
+                :door.getInRoom(this);
+    }
+
 	private Door connectInwardRoom(Room outRoom, Room inRoom) {
 		Door door = new Door(outRoom, inRoom, "D"+SequenceGenerator.incrementAndGet("door"));
 		doorMap.put(door.getName(),door);

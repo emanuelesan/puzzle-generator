@@ -10,6 +10,7 @@ import javaslang.Tuple2;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,6 +19,8 @@ import java.util.stream.Stream;
  * between rooms that have a door connecting them but are not adjacent.
  */
 public class CorridorConnector implements TickWiseOperator {
+    private static final Logger logger = Logger.getLogger("logger");
+
     private final Map<String, Rectangle> rectsByRoom;
     private final Puzzle puz;
 
@@ -64,7 +67,29 @@ public class CorridorConnector implements TickWiseOperator {
 
     @Override
     public boolean isPuzzleStillValid() {
-        return true;
+        return !doRoomsOverlap();
+    }
+
+    private boolean doRoomsOverlap() {
+        boolean result = false;
+        for (Map.Entry<String, Rectangle> rec1 : rectsByRoom.entrySet()) {
+            for (Map.Entry<String, Rectangle> rec2 : rectsByRoom.entrySet())
+
+            {
+                if (!rec1.getKey().equals(rec2.getKey())) {
+                    double intersectionArea = rec1.getValue().intersectionArea(rec2.getValue());
+
+                    if (intersectionArea > 1) {
+                        logger.info("intersection area between " + rec1.getKey() + " && " + rec2.getKey() + "= " + intersectionArea);
+                    }
+
+                    result = result || (intersectionArea > 1);
+                }
+            }
+
+
+        }
+        return result;
     }
 
     private List<Tuple2<Door, Direction>> computeCorridors() {

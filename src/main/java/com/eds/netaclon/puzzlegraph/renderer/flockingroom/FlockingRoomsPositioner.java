@@ -9,6 +9,7 @@ import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperat
 
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -17,8 +18,7 @@ import java.util.stream.Collectors;
  */
 public class FlockingRoomsPositioner implements TickWiseOperator {
 
-    public static final double X_MAX = 6;
-    public static final double Y_MAX = 4;
+    private static final Logger logger = Logger.getLogger("logger");
 
     private static final double ALPHA = .1;
     private final Puzzle puz;
@@ -27,7 +27,6 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
 
     private Map<String, Rectangle> rectsByRoom;
     private int maxIterations;
-    private boolean done;
 
     double startPushClose ;
     double startPushAway  ;
@@ -37,29 +36,8 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
 
     public FlockingRoomsPositioner(GraphicPuzzle gp) {
         this.puz = gp.getPuzzle();
-        Random random = new Random(0);
-        PosMapCalculator posCa = new PosMapCalculator();
-        Map<Room, IntPosition> roomIntPositionMap = posCa.calculateRoomMap(puz);
 
-        Map<String, Rectangle> collect = puz.allRooms().stream()
-                .collect(Collectors.toMap(
-                        Room::getName,
-                        room -> {
-                            IntPosition pos = roomIntPositionMap.get(room);
-                            if (pos == null) {
-                                pos = new IntPosition(0, 0);
-                            }
-                            int xMin = (int) (pos.x * Math.max(X_MAX, Y_MAX));
-                            int yMin = (int) (pos.y * Math.max(X_MAX, Y_MAX));
-                            int sizeMult = room.getItemNames().size() + room.getDoorNames().size();
-                            return new Rectangle(xMin, yMin,
-                                    xMin + 2 * Math.floor((sizeMult+4 * random.nextDouble()) / 7 * X_MAX),
-                                    yMin + 2 * Math.floor((sizeMult +4 * random.nextDouble()) / 7 * Y_MAX));
-                        }
-
-                ));
         rectsByRoom =gp.getRectsByRoom();
-        rectsByRoom.putAll(collect);
 
 
         startPushClose = .5;
@@ -70,6 +48,8 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
         maxIterations = 20 * 60*(int)(Math.floor(rectsByRoom.size()/10)+1);
     }
 
+
+
     @Override
     public void tick() {
 
@@ -79,12 +59,11 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
         balanceDistances(pushCloseFactor, pushAwayFactor,snapFactor);
 
         step++;
-        done = step>=maxIterations+15*60;
 
     }
 
     public boolean isDone() {
-        return done;
+        return step>=maxIterations+15*60;
     }
 
     @Override

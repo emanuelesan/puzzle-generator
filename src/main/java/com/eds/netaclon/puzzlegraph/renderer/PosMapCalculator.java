@@ -34,15 +34,12 @@ public class PosMapCalculator {
         Map<Room, IntPosition> roomMap = new HashMap<Room, IntPosition>();
         BreadthFirstExplorer.attraversaPuz(puz, new DepthCalculator());
         List<Room> rooms = new LinkedList<>(puz.allRooms());
-        Collections.sort(rooms, new Comparator<Room>() {
-
-            public int compare(Room o1, Room o2) {
-                int d1 = o1.getDepth();
-                int d2 = o2.getDepth();
-                if (d1 < d2) return -1;
-                if (d1 == d2) return 0;
-                return 1;
-            }
+        Collections.sort(rooms, (o1, o2) -> {
+            int d1 = o1.getDepth();
+            int d2 = o2.getDepth();
+            if (d1 < d2) return -1;
+            if (d1 == d2) return 0;
+            return 1;
         });
         List<IntPosition> candidates = new LinkedList<>();
         for (Room r : rooms) {
@@ -91,9 +88,11 @@ public class PosMapCalculator {
                     }
                 }
                 if(!roomMap.containsKey(r)) {
-                    logger.info("WARNING: room lost");
                     if (candidates.size()>0)
                     roomMap.put(r,candidates.get(0));
+                    else
+                        logger.info("WARNING: room lost");
+
                 }
 
             }
