@@ -11,6 +11,7 @@ import com.eds.netaclon.puzzlegraph.renderer.PosMapCalculator;
 import com.eds.netaclon.puzzlegraph.renderer.Visualizer;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperator;
 import com.eds.netaclon.puzzlegraph.util.BreadthFirstExplorer;
+import com.google.gson.GsonBuilder;
 import org.codehaus.jackson.map.ObjectMapper;
 import sun.jvm.hotspot.debugger.cdbg.VoidType;
 
@@ -89,7 +90,7 @@ public class FlockingRoomsRenderer implements Visualizer {
         if (operators.peek().isDone()) {
             logger.info("removed operator, welcome new operator! ");
             try {
-                String jsonMap = new ObjectMapper().writeValueAsString(graphicPuzzle);
+                String jsonMap = new GsonBuilder().create().toJson(graphicPuzzle);
 
                 logger.info("puz--> " + jsonMap);
             } catch (Exception e) {

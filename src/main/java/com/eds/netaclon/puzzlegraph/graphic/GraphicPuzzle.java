@@ -11,10 +11,9 @@ import java.util.Map;
  * Created by emanuelesan on 10/04/16.
  */
 public class GraphicPuzzle {
-    @JsonProperty
     private Puzzle puzzle;
-    @JsonProperty
     private Map<String, Rectangle> rectsByRoom;
+    private Map<String, Rectangle> rectsByItems;
 
     public GraphicPuzzle()
     {}

@@ -60,7 +60,8 @@ public class PuzzleCreator {
         TickWiseOperator corridorConnector = new CorridorConnector(graphicPuzzle);
 
         TickWiseOperator doorCreator = new DoorCreator(graphicPuzzle);
-        FlockingRoomsRenderer flockingRoomsRenderer = new FlockingRoomsRenderer(graphicPuzzle,initialPositioner, positioner, clamper, corridorConnector, doorCreator);
+        FlockingRoomsRenderer flockingRoomsRenderer = new FlockingRoomsRenderer(graphicPuzzle,
+                initialPositioner, positioner, clamper, corridorConnector, doorCreator);
         flockingRoomsRenderer.show();
 
     }

@@ -1,6 +1,5 @@
 package com.eds.netaclon.puzzlegraph.renderer.flockingroom;
 
-import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.io.Serializable;
 
@@ -10,7 +9,6 @@ import java.io.Serializable;
  * aaah the rectangle class, an evergreen.
  */
 public class Rectangle implements Serializable {
-    @JsonProperty
     private double x, y,xMin,yMin,xMax,yMax;
 
     private double xVel;
