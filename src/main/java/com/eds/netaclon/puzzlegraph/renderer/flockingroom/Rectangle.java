@@ -170,4 +170,13 @@ public class Rectangle implements Serializable {
         yMax=y + (yMax-y)*yRatio;
 
     }
+
+    public void roundCoords() {
+        xMin = Math.round(xMin);
+        xMax = Math.round(xMax);
+
+        yMin = Math.round(yMin);
+        yMax = Math.round(yMax);
+
+    }
 }

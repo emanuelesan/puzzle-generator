@@ -10,24 +10,24 @@ import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperat
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.logging.Logger;
 
 public class InitialPositioner implements TickWiseOperator {
-    private static final Logger logger = Logger.getLogger("logger");
 
-     static final double X_MAX = 6;
-    static final double Y_MAX = 4;
+     private static final double X_MAX = 6;
+    private static final double Y_MAX = 4;
     private final Puzzle puz;
+    private final GraphicPuzzle graphicPuzzle;
+    private final Random rand;
 
     public InitialPositioner(GraphicPuzzle graphicPuzzle, Random rand) {
         this.puz = graphicPuzzle.getPuzzle();
-        initialRoomPositions(graphicPuzzle, rand);
-
+        this.graphicPuzzle = graphicPuzzle;
+        this.rand=rand;
     }
 
     @Override
     public void tick() {
-        //void.
+        initialRoomPositions(graphicPuzzle, rand);
     }
 
     private void initialRoomPositions(GraphicPuzzle gp, Random random) {

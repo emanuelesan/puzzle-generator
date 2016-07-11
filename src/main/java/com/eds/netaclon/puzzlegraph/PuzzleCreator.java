@@ -13,6 +13,7 @@ import com.eds.netaclon.puzzlegraph.plotseed.impl.LockedDoorPlot;
 import com.eds.netaclon.puzzlegraph.plotseed.PlotSeed;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.FlockingRoomsPositioner;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.FlockingRoomsRenderer;
+import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.Clamper;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.CorridorConnector;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.DoorCreator;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperator;
@@ -25,12 +26,12 @@ public class PuzzleCreator {
     private final List<PlotSeeder> seedBag;
     private final Random rand;
 
-    public PuzzleCreator(List<PlotSeeder> seedBag, Random rand) {
+     private PuzzleCreator(List<PlotSeeder> seedBag, Random rand) {
         this.seedBag = seedBag;
         this.rand = rand;
     }
 
-    public Puzzle createPuzzle(int expansionCycles) {
+     private Puzzle createPuzzle(int expansionCycles) {
         Puzzle puz = new Puzzle();
         for (int cycle = 0; cycle < expansionCycles; cycle++) {
 
@@ -52,14 +53,14 @@ public class PuzzleCreator {
 
         TickWiseOperator initialPositioner = new InitialPositioner(graphicPuzzle,rand);
 
-        FlockingRoomsPositioner positioner = new FlockingRoomsPositioner(graphicPuzzle);
-        //at this point, the puzzle must be checked if it's correct.
+        TickWiseOperator positioner = new FlockingRoomsPositioner(graphicPuzzle);
+
+        TickWiseOperator clamper = new Clamper(graphicPuzzle);
 
         TickWiseOperator corridorConnector = new CorridorConnector(graphicPuzzle);
-        //at this point, the puzzle must be checked if it's correct.
 
-        TickWiseOperator doorCreator = new DoorCreator(positioner.getRectsByRoom());
-        FlockingRoomsRenderer flockingRoomsRenderer = new FlockingRoomsRenderer(graphicPuzzle, positioner, corridorConnector, doorCreator);
+        TickWiseOperator doorCreator = new DoorCreator(graphicPuzzle);
+        FlockingRoomsRenderer flockingRoomsRenderer = new FlockingRoomsRenderer(graphicPuzzle,initialPositioner, positioner, clamper, corridorConnector, doorCreator);
         flockingRoomsRenderer.show();
 
     }

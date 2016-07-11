@@ -37,19 +37,19 @@ public class FlockingRoomsRenderer implements Visualizer {
     private final Puzzle puz;
     private final GraphicPuzzle graphicPuzzle;
     private final Rectangle view;
-    private final double height = 600,width=800;
-    private  Map<String, Rectangle> rectsByRoom;
+    private final double height = 600, width = 800;
+    private Map<String, Rectangle> rectsByRoom;
     private final Queue<TickWiseOperator> operators;
 
 
-    public FlockingRoomsRenderer(GraphicPuzzle gp,TickWiseOperator... operators) {
+    public FlockingRoomsRenderer(GraphicPuzzle gp, TickWiseOperator... operators) {
         this.graphicPuzzle = gp;
         this.puz = gp.getPuzzle();
-        rectsByRoom=gp.getRectsByRoom();
+        rectsByRoom = gp.getRectsByRoom();
         this.operators = new LinkedList<>();
-        Stream.of(operators).forEachOrdered(operator->this.operators.add(operator));
+        Stream.of(operators).forEachOrdered(operator -> this.operators.add(operator));
 
-        this. view=determineView();
+        this.view = new Rectangle(0, 0, width, height);
 
         image = new BufferedImage((int) width, (int) height, BufferedImage.TYPE_INT_ARGB);
         g = (Graphics2D) image.getGraphics();
@@ -70,36 +70,36 @@ public class FlockingRoomsRenderer implements Visualizer {
 
                 processingStep();
 
-                if (System.currentTimeMillis()>lastRender+16) {
+                if (System.currentTimeMillis() > lastRender + 16) {
                     updateImage(imageShow);
-                    lastRender=System.currentTimeMillis();
+                    lastRender = System.currentTimeMillis();
                 }
 
 
             }
 
-        } catch (IOException  e) {
+        } catch (IOException e) {
             System.out.println("colors");
         }
 
     }
 
     private void processingStep() {
-        if (operators.peek().isDone())
-        {
+        operators.peek().tick();
+        if (operators.peek().isDone()) {
             logger.info("removed operator, welcome new operator! ");
             try {
                 String jsonMap = new ObjectMapper().writeValueAsString(graphicPuzzle);
 
                 logger.info("puz--> " + jsonMap);
-            }catch (Exception e)
-            {logger.info(e.getMessage());}
-            if(operators.peek().isPuzzleStillValid())
-            operators.poll();
+            } catch (Exception e) {
+                logger.info(e.getMessage());
+            }
+            if (operators.peek().isPuzzleStillValid())
+                operators.poll();
             else
                 throw new RuntimeException("puzzle went bad.");
         }
-        operators.peek().tick();
     }
 
     private void updateImage(ImageShow imageShow) {
@@ -134,12 +134,11 @@ public class FlockingRoomsRenderer implements Visualizer {
     }
 
     private int rnd(double value) {
-        return (int)value;
+        return (int) value;
     }
 
 
-
-    private  Rectangle determineView() {
+    private Rectangle determineView() {
         Rectangle view = null;
         for (Rectangle rec : rectsByRoom.values()) {
             if (view == null) {
@@ -149,47 +148,40 @@ public class FlockingRoomsRenderer implements Visualizer {
             }
         }
         //view must have the same aspect ratio of the window.
-        double viewRatio =view.width()/view.height();
-        double windowRatio  = width/height;
-        if (viewRatio<windowRatio)
-        {   //width must become larger
-            view.scale(windowRatio/viewRatio,1);
-        }
-        else
-        {   //height must become larger
-            view.scale(1,windowRatio/viewRatio);
+        double viewRatio = view.width() / view.height();
+        double windowRatio = width / height;
+        if (viewRatio < windowRatio) {   //width must become larger
+            view.scale(windowRatio / viewRatio, 1);
+        } else {   //height must become larger
+            view.scale(1, windowRatio / viewRatio);
         }
 
         return view;
     }
 
 
-
-
     private void drawGrid() {
         g.setColor(Color.darkGray);
         double xStart = Math.round(view.xMin());
         double xEnd = Math.round(view.xMax());
-        for (double col = xStart;col<=xEnd;col++)
-        {
+        for (double col = xStart; col <= xEnd; col++) {
             double transCol = transformX(col);
-            g.drawLine(rnd(transCol),0,rnd(transCol),rnd(height));
+            g.drawLine(rnd(transCol), 0, rnd(transCol), rnd(height));
         }
 
         double yStart = Math.round(view.yMin());
         double yEnd = Math.round(view.yMax());
-        for (double row = yStart;row<=yEnd;row++)
-        {
+        for (double row = yStart; row <= yEnd; row++) {
             double transRow = transformY(row);
-            g.drawLine(0,rnd(transRow),rnd(width),rnd(transRow));
+            g.drawLine(0, rnd(transRow), rnd(width), rnd(transRow));
         }
 
     }
 
     private Color colorOf(String roomName) {
-        if( roomName.equalsIgnoreCase("start"))
+        if (roomName.equalsIgnoreCase("start"))
             return Color.GREEN;
-        if( roomName.equalsIgnoreCase("end"))
+        if (roomName.equalsIgnoreCase("end"))
             return Color.RED;
         return Color.WHITE;
     }
@@ -204,11 +196,11 @@ public class FlockingRoomsRenderer implements Visualizer {
 //                .times(1D / rectsByRoom.size());
         Rectangle center = determineView();
 
-        view.push(new Vector2(center.x(),center.y()).minus(new Vector2(view.x(), view.y())).times(.1));
+        view.push(new Vector2(center.x(), center.y()).minus(new Vector2(view.x(), view.y())).times(.1));
         view.move();
-        double widthRatio =   (center.width()+4)/view.width();
-        double heightRation =   (center.height()+4)/view.height();
-        double ratio = widthRatio<heightRation?heightRation:widthRatio;
+        double widthRatio = (center.width() + 4) / view.width();
+        double heightRation = (center.height() + 4) / view.height();
+        double ratio = widthRatio < heightRation ? heightRation : widthRatio;
         view.scale(ratio);
     }
 
@@ -216,9 +208,9 @@ public class FlockingRoomsRenderer implements Visualizer {
         Rectangle rec1 = rectsByRoom.get(door.getInRoomName());
         Rectangle rec2 = rectsByRoom.get(door.getOutRoomName());
         g.drawLine(rnd(transformX(rec1.x()))
-                ,rnd(transformY(rec1.y()))
-                ,rnd(transformX(rec2.x()))
-                ,rnd(transformY(rec2.y())));
+                , rnd(transformY(rec1.y()))
+                , rnd(transformX(rec2.x()))
+                , rnd(transformY(rec2.y())));
     }
 
 }
