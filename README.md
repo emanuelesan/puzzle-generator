@@ -1,29 +1,18 @@
-# README #
+# PUZZLE-GENERATOR #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This code generates a zelda-like (or lufia 2 -like) dungeon puzzle skeleton, and then creates a graphical representation
+by positioning each room to achieve minimum area coverage.
 
-### What is this repository for? ###
+### algorithm description ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* current version: pretty much unstable
 
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
+### Next steps ###
+* CLEANUP
+* exact door positioning
+* chests and keys positioning
+* quick demo
 
 ### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+* feel free to open issues or contact me directly if you have inquiries!
