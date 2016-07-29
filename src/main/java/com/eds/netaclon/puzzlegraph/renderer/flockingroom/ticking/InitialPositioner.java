@@ -1,23 +1,26 @@
-package com.eds.netaclon.puzzlegraph.renderer.flockingroom;
+package com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking;
 
 import com.eds.netaclon.graphics.IntPosition;
 import com.eds.netaclon.puzzlegraph.Puzzle;
 import com.eds.netaclon.puzzlegraph.Room;
 import com.eds.netaclon.puzzlegraph.graphic.GraphicPuzzle;
 import com.eds.netaclon.puzzlegraph.renderer.PosMapCalculator;
-import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperator;
+import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Rectangle;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Logger;
 
 public class InitialPositioner implements TickWiseOperator {
+    private static final Logger logger = Logger.getLogger("logger");
 
-     private static final double X_MAX = 6;
+    private static final double X_MAX = 6;
     private static final double Y_MAX = 4;
     private final Puzzle puz;
     private final GraphicPuzzle graphicPuzzle;
     private final Random rand;
+    private boolean done = false;
 
     public InitialPositioner(GraphicPuzzle graphicPuzzle, Random rand) {
         this.puz = graphicPuzzle.getPuzzle();
@@ -27,7 +30,7 @@ public class InitialPositioner implements TickWiseOperator {
 
     @Override
     public void tick() {
-        initialRoomPositions(graphicPuzzle, rand);
+        if (!isDone()) initialRoomPositions(graphicPuzzle, rand);
     }
 
     private void initialRoomPositions(GraphicPuzzle gp, Random random) {
@@ -43,15 +46,15 @@ public class InitialPositioner implements TickWiseOperator {
             {
                 if (room.getDoorNames().size()>1)
                 {
-                    throw new RuntimeException("a room which was fitted in a space already "
-                            +"occupied had more than one room attached");
+                    logger.info("a room which was fitted in a space already "
+                            +"occupied had more than one room attached. should be thrown out");
                 }
                 Room otherRoom = puz.getOtherRoom(room.getDoorNames().get(0),room);
                 IntPosition otherRoomPosition = roomIntPositionMap.get(otherRoom);
 
 
-                int xMin = (int) ((pos.x +otherRoomPosition.x)/2.0 * Math.max(X_MAX, Y_MAX));
-                int yMin = (int) ((pos.y  +otherRoomPosition.y/2.0)* Math.max(X_MAX, Y_MAX));
+                int xMin = (int) ((pos.x +otherRoomPosition.x)/2.0 * 2*Math.max(X_MAX, Y_MAX));
+                int yMin = (int) ((pos.y  +otherRoomPosition.y/2.0)* 2*Math.max(X_MAX, Y_MAX));
                 int sizeMult = room.getItemNames().size() + room.getDoorNames().size();
                 double widthModifier = random.nextDouble() > 0.5 ? 1 : 0;
                 double heightModifier = random.nextDouble() > 0.5 ? 1 : 0;
@@ -61,8 +64,8 @@ public class InitialPositioner implements TickWiseOperator {
             }
             else {
 
-                int xMin = (int) (pos.x * Math.max(X_MAX, Y_MAX));
-                int yMin = (int) (pos.y * Math.max(X_MAX, Y_MAX));
+                int xMin = (int) (pos.x * 2* Math.max(X_MAX, Y_MAX));
+                int yMin = (int) (pos.y * 2*Math.max(X_MAX, Y_MAX));
                 int sizeMult = room.getItemNames().size() + room.getDoorNames().size();
                 double widthModifier = random.nextDouble() > 0.5 ? 1 : 0;
                 double heightModifier = random.nextDouble() > 0.5 ? 1 : 0;
@@ -74,11 +77,12 @@ public class InitialPositioner implements TickWiseOperator {
         }
 
         gp.getRectsByRoom().putAll(rectangleByRoomName);
+        done = true;
     }
 
     @Override
     public boolean isDone() {
-        return true;
+        return done;
     }
 
     @Override

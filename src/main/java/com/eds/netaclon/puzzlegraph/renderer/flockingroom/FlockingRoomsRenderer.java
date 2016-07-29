@@ -87,7 +87,7 @@ public class FlockingRoomsRenderer implements Visualizer {
 
     private void processingStep() {
         operators.peek().tick();
-        if (operators.peek().isDone()) {
+        if (operators.peek().isDone() && operators.size()>1) {
             logger.info("removed operator, welcome new operator! ");
             try {
                 String jsonMap = new GsonBuilder().create().toJson(graphicPuzzle);

@@ -1,10 +1,12 @@
-package com.eds.netaclon.puzzlegraph.renderer.flockingroom;
+package com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking;
 
 import com.eds.netaclon.graphics.IntPosition;
 import com.eds.netaclon.puzzlegraph.Puzzle;
 import com.eds.netaclon.puzzlegraph.Room;
 import com.eds.netaclon.puzzlegraph.graphic.GraphicPuzzle;
 import com.eds.netaclon.puzzlegraph.renderer.PosMapCalculator;
+import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Rectangle;
+import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Vector2;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperator;
 
 import java.util.Map;
@@ -71,18 +73,17 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
         return true;
     }
 
-    public Map<String, Rectangle> getRectsByRoom() {
-        return rectsByRoom;
-    }
-
     private void balanceDistances(double pushCloseFactor, double pushAwayFactor,double snapFactor) {
         rectsByRoom.entrySet().forEach(entry ->
                 {
                     Rectangle rec = entry.getValue();
                     Room room = puz.getRoom(entry.getKey());
 
-                    pushDoorsClose(rec, room, pushCloseFactor);
-                    pushAwayOverlapped(rec, pushAwayFactor);
+                   Vector2 push= pushDoorsClose(rec, room, pushCloseFactor);
+                   Vector2 pull= pushAwayOverlapped(rec, pushAwayFactor);
+
+                    rec.push(push);
+                    rec.push(pull);
 
                     rec.move();
                     snapToGrid(rec, snapFactor);
@@ -91,25 +92,34 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
         );
     }
 
+    /**
+     * transforms it to its principal component versor
+     */
+    private Vector2 versorize(Vector2 vec) {
+        return new Vector2(Math.signum(vec.x), Math.signum(vec.y));
+    }
+
+
     private void snapToGrid(Rectangle rec,double snapFactor) {
         Vector2 push = new Vector2(-rec.x() + Math.round(rec.x()),
                 -rec.y() + Math.round(rec.y()));
         rec.push(push.times(ALPHA * snapFactor));
     }
 
-    private void pushAwayOverlapped(Rectangle rec, double fact) {
-        rectsByRoom.values().stream()
+    private Vector2 pushAwayOverlapped(Rectangle rec, double fact) {
+       return  rectsByRoom.values().stream()
                 .map(rec1 -> rec.minusPos(rec1)
                         .times(ALPHA * fact * rec1.intersectionArea(rec)))
-                .forEach(rec::push);
+                .reduce(Vector2::plus)
+                .orElse(Vector2.ZERO);
     }
 
-    private void pushDoorsClose(Rectangle rec, Room room, double factor) {
-       puz.getDoors( room)
+    private Vector2 pushDoorsClose(Rectangle rec, Room room, double factor) {
+      return puz.getDoors( room)
                 .stream()
                 .map(door -> door.getInRoomName() .equals( room.getName()) ? door.getOutRoomName() : door.getInRoomName())
                 .map(rectsByRoom::get)
-                .forEach(rec1 -> {
+                .map(rec1 -> {
                     //push torwards rec1 above,below,left or right
                     Vector2 roomDims = new Vector2(
                             (rec.width() + rec1.width()) / 2D,
@@ -120,8 +130,10 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
                             .plus(rec1.x(), rec1.y());
                     Vector2 targetDirection = targetPosition.minus(rec.x(), rec.y());
 
-                    rec.push(targetDirection.times(ALPHA * factor));
-                });
+                    return targetDirection.times(ALPHA * factor);
+                })
+       .reduce(Vector2::plus)
+       .orElse(Vector2.ZERO);
     }
 
 

@@ -29,6 +29,8 @@ public class Rectangle implements Serializable {
     }
 
     public void move() {
+
+
         xMin += xVel;
         yMin += yVel;
         xMax += xVel;
@@ -47,7 +49,7 @@ public class Rectangle implements Serializable {
         return 0;
     }
 
-    private Rectangle intersection(Rectangle r) {
+    public Rectangle intersection(Rectangle r) {
         return new Rectangle(Math.max(xMin, r.xMin), Math.max(yMin, r.yMin), Math.min(xMax, r.xMax), Math.min(yMax, r.yMax));
     }
 

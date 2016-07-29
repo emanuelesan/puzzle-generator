@@ -5,6 +5,7 @@ package com.eds.netaclon.puzzlegraph.renderer.flockingroom;
  */
 public class Vector2 {
 
+    public static final Vector2 ZERO = new Vector2(0,0);
     public final double x, y;
 
     public Vector2(double x, double y) {
@@ -12,12 +13,12 @@ public class Vector2 {
         this.y = y;
     }
 
-    double magnitude()
+    public double magnitude()
     {
         return Math.sqrt(x*x+y*y);
     }
 
-    Vector2 times(double times)
+    public Vector2 times(double times)
     {
         return new Vector2(x*times,y*times);
     }
