@@ -3,7 +3,6 @@ package com.eds.netaclon.puzzlegraph.graphic;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.eds.netaclon.graphics.IntPosition;
 import com.eds.netaclon.puzzlegraph.tile.Tile;
 
 public class GenericGraphicSeed implements GraphicSeed {

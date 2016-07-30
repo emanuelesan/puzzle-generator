@@ -2,28 +2,21 @@ package com.eds.netaclon.puzzlegraph;
 
 import com.eds.netaclon.puzzlegraph.item.*;
 import com.eds.netaclon.puzzlegraph.util.SequenceGenerator;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Puzzle {
 
-	@JsonProperty
 	private final Map<String, Room> roomMap;
-	@JsonProperty
 	private final Map<String, Key> keyMap;
-	@JsonProperty
 	private final Map<String, Door> doorMap;
-	@JsonProperty
 	private final Map<String, Container> containerMap;
 
 	private final List<Map<String,? extends Lockable>> lockables;
 	private final List<Map<String,? extends Item>> items;
 
-	@JsonProperty
 	private Room start;
-	@JsonProperty
 	private Room end;
 
 	public Puzzle()
@@ -111,7 +104,7 @@ public class Puzzle {
 	}
 
 
-	public String printInfo() {
+	 String printInfo() {
 		StringBuilder stringAppender= new StringBuilder();
 		for (Room room : roomMap.values()) {
 			stringAppender.append(room.description()).append("\n");
@@ -163,7 +156,7 @@ public class Puzzle {
 		return
 				room.getDoorNames().stream().map(doorMap::get).collect(Collectors.toList());}
 
-	public Door getDoor(String doorName) {
+	 Door getDoor(String doorName) {
 		return doorMap.get(doorName);
 	}
 
@@ -172,7 +165,7 @@ public class Puzzle {
 	}
 
 
-	public Item getItem(String itemName) {
+	 Item getItem(String itemName) {
 		 	return items.stream().map(map->map.get(itemName)).filter(n->n!=null).findFirst().get();
 	}
 

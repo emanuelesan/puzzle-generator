@@ -1,6 +1,6 @@
 package com.eds.netaclon.puzzlegraph.renderer;
 
-import com.eds.netaclon.graphics.IntPosition;
+import com.eds.netaclon.puzzlegraph.graphic.IntPosition;
 import com.eds.netaclon.puzzlegraph.Puzzle;
 import com.eds.netaclon.puzzlegraph.Room;
 import com.eds.netaclon.puzzlegraph.item.Door;

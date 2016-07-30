@@ -1,6 +1,5 @@
 package com.eds.netaclon.puzzlegraph.graphic;
 
-import com.eds.netaclon.graphics.IntPosition;
 import com.eds.netaclon.puzzlegraph.tile.Tile;
 
 public class SingleCellChanger implements Growable {

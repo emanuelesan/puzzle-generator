@@ -1,18 +1,13 @@
 package com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking;
 
-import com.eds.netaclon.graphics.IntPosition;
 import com.eds.netaclon.puzzlegraph.Puzzle;
 import com.eds.netaclon.puzzlegraph.Room;
 import com.eds.netaclon.puzzlegraph.graphic.GraphicPuzzle;
-import com.eds.netaclon.puzzlegraph.renderer.PosMapCalculator;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Rectangle;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Vector2;
-import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperator;
 
 import java.util.Map;
-import java.util.Random;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * it makes pretty crystal dungeons by cooling a puzzle.

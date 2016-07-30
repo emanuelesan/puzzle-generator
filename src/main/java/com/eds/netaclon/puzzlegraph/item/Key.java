@@ -1,12 +1,9 @@
 package com.eds.netaclon.puzzlegraph.item;
 
 import com.eds.netaclon.puzzlegraph.Puzzle;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 public class Key implements Item {
-    @JsonProperty
     private  String lockableName;
-    @JsonProperty
     private  String name;
 
     public Key()

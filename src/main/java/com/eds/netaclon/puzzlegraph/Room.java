@@ -2,22 +2,21 @@ package com.eds.netaclon.puzzlegraph;
 
 import com.eds.netaclon.puzzlegraph.item.Door;
 import com.eds.netaclon.puzzlegraph.item.Item;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Room implements Item {
-    @JsonProperty
+
     private String pathToEndName;
-    @JsonProperty
+
     private List<String> doorNames;
-    @JsonProperty
+
     private List<String> itemNames;
-    @JsonProperty
+
     private int depth;
-    @JsonProperty
+
     private String name;
 
     public Room() {

@@ -4,17 +4,11 @@ import com.eds.netaclon.puzzlegraph.Puzzle;
 import com.eds.netaclon.puzzlegraph.item.Door;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Rectangle;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Vector2;
-import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.CorridorConnector;
 import javaslang.Tuple2;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-/**
- * Created by emanuelesan on 10/04/16.
- */
 public class GraphicPuzzle {
     private Puzzle puzzle;
     private Map<String, Rectangle> rectsByRoom;

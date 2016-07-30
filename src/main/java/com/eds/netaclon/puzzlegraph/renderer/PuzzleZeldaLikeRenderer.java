@@ -3,7 +3,7 @@ package com.eds.netaclon.puzzlegraph.renderer;
 import java.util.*;
 import java.util.logging.Logger;
 
-import com.eds.netaclon.graphics.IntPosition;
+import com.eds.netaclon.puzzlegraph.graphic.IntPosition;
 import com.eds.netaclon.puzzlegraph.item.Door;
 import com.eds.netaclon.puzzlegraph.Puzzle;
 import com.eds.netaclon.puzzlegraph.Room;

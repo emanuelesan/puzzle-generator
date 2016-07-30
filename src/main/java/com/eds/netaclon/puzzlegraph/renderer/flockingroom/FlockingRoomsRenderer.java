@@ -1,34 +1,16 @@
 package com.eds.netaclon.puzzlegraph.renderer.flockingroom;
 
-import com.eds.netaclon.graphics.IntPosition;
-import com.eds.netaclon.puzzlegraph.Puzzle;
-import com.eds.netaclon.puzzlegraph.Room;
 import com.eds.netaclon.puzzlegraph.graphic.GraphicPuzzle;
 import com.eds.netaclon.puzzlegraph.item.Door;
-import com.eds.netaclon.puzzlegraph.operator.DepthCalculator;
 import com.eds.netaclon.puzzlegraph.renderer.ImageShow;
-import com.eds.netaclon.puzzlegraph.renderer.PosMapCalculator;
 import com.eds.netaclon.puzzlegraph.renderer.Visualizer;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperator;
-import com.eds.netaclon.puzzlegraph.util.BreadthFirstExplorer;
-import com.google.gson.GsonBuilder;
-import org.codehaus.jackson.map.ObjectMapper;
-import sun.jvm.hotspot.debugger.cdbg.VoidType;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.*;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-/**
- * Created by emanuelesan on 30/03/16.
- */
+
 public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Visualizer {
 
     private final BufferedImage image;
@@ -82,9 +64,9 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
         drawGrid();
 
         rectsByRoom.entrySet().forEach(entry -> drawRectangle(g, entry.getValue(), colorOf(entry.getKey())));
-        g.setColor(Color.ORANGE);
-        puz.getDoorMap().values()
-                .forEach(door -> drawDoor(g, door));
+//        g.setColor(Color.ORANGE);
+//        puz.getDoorMap().values()
+//                .forEach(door -> drawDoor(g, door));
         graphicPuzzle.getRectsByDoor().values().forEach(room -> drawRectangle(g, room, Color.CYAN));
 
 
@@ -163,13 +145,6 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
     }
 
     private void centerCamera() {
-//        Vector2 center = rectsByRoom
-//                .values()
-//                .stream()
-//                .map(rect -> new Vector2(rect.x(), rect.y()))
-//                .reduce((vec1, vec2) -> vec1.plus(vec2))
-//                .get()
-//                .times(1D / rectsByRoom.size());
         Rectangle center = determineView();
 
         view.push(new Vector2(center.x(), center.y()).minus(new Vector2(view.x(), view.y())).times(.1));

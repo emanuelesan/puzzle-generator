@@ -1,4 +1,4 @@
-package com.eds.netaclon.graphics;
+package com.eds.netaclon.puzzlegraph.graphic;
 
 /**
  * Created by emanuelesan on 30/03/16.
