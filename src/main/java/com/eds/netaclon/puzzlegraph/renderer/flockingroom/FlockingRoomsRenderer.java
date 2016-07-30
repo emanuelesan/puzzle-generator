@@ -29,26 +29,16 @@ import java.util.stream.Stream;
 /**
  * Created by emanuelesan on 30/03/16.
  */
-public class FlockingRoomsRenderer implements Visualizer {
-    private static final int LONG_SIDE_PIC = 800;
+public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Visualizer {
 
-    private static final Logger logger = Logger.getLogger("logger");
     private final BufferedImage image;
     private final Graphics2D g;
-    private final Puzzle puz;
-    private final GraphicPuzzle graphicPuzzle;
     private final Rectangle view;
     private final double height = 600, width = 800;
-    private Map<String, Rectangle> rectsByRoom;
-    private final Queue<TickWiseOperator> operators;
 
 
     public FlockingRoomsRenderer(GraphicPuzzle gp, TickWiseOperator... operators) {
-        this.graphicPuzzle = gp;
-        this.puz = gp.getPuzzle();
-        rectsByRoom = gp.getRectsByRoom();
-        this.operators = new LinkedList<>();
-        Stream.of(operators).forEachOrdered(operator -> this.operators.add(operator));
+        super(gp,operators);
 
         this.view = new Rectangle(0, 0, width, height);
 
@@ -85,24 +75,6 @@ public class FlockingRoomsRenderer implements Visualizer {
 
     }
 
-    private void processingStep() {
-        operators.peek().tick();
-        if (operators.peek().isDone() && operators.size()>1) {
-            logger.info("removed operator, welcome new operator! ");
-            try {
-                String jsonMap = new GsonBuilder().create().toJson(graphicPuzzle);
-
-                logger.info("puz--> " + jsonMap);
-            } catch (Exception e) {
-                logger.info(e.getMessage());
-            }
-            if (operators.peek().isPuzzleStillValid())
-                operators.poll();
-            else
-                throw new RuntimeException("puzzle went bad.");
-        }
-    }
-
     private void updateImage(ImageShow imageShow) {
         centerCamera();
         g.clearRect(0, 0, (int) width, (int) height);
@@ -113,6 +85,9 @@ public class FlockingRoomsRenderer implements Visualizer {
         g.setColor(Color.ORANGE);
         puz.getDoorMap().values()
                 .forEach(door -> drawDoor(g, door));
+        graphicPuzzle.getRectsByDoor().values().forEach(room -> drawRectangle(g, room, Color.CYAN));
+
+
         imageShow.repaint();
     }
 

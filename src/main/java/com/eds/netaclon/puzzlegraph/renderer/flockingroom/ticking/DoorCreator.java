@@ -2,25 +2,70 @@ package com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking;
 
 import com.eds.netaclon.puzzlegraph.Room;
 import com.eds.netaclon.puzzlegraph.graphic.GraphicPuzzle;
+import com.eds.netaclon.puzzlegraph.item.Door;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Rectangle;
 
 import java.util.Map;
 
 /**
  * creates doors between adjacent rooms.
+ * doors are 1x2 large.
  */
 public class DoorCreator implements TickWiseOperator {
-    public DoorCreator(GraphicPuzzle rectsByRoom) {
+
+    private final GraphicPuzzle gp;
+    private boolean done = false;
+
+    public DoorCreator(GraphicPuzzle gp) {
+        this.gp = gp;
     }
 
     @Override
     public void tick() {
+        createAllDoors();
 
+        done = true;
+    }
+
+    private void createAllDoors() {
+        gp.getPuzzle().getDoorMap().values().forEach(this::createDoor);
+
+    }
+
+    /**
+     * creates a graphical representation of a door.
+     *
+     * @param door
+     */
+    private void createDoor(Door door) {
+        Map<String, Rectangle> rectsByRoom = gp.getRectsByRoom();
+        Rectangle r1 = rectsByRoom.get(door.getInRoomName());
+        Rectangle r2 = rectsByRoom.get(door.getOutRoomName());
+
+        double xMin = Math.max(r1.xMin(), r2.xMin()),
+                yMin = Math.max(r1.yMin(), r2.yMin()),
+                xMax = Math.min(r1.xMax(), r2.xMax()),
+                yMax = Math.min(r1.yMax(), r2.yMax());
+
+        Rectangle doorRect;
+        if (yMax - yMin > xMax - xMin) {
+            doorRect=Rectangle.fromCenter(Math.floor((xMin + xMax) / 2.0),
+                    Math.floor((yMin + yMax) / 2.0)+.5,
+                    2, 1);
+        }
+        else
+        {
+            doorRect=Rectangle.fromCenter(Math.floor((xMin + xMax) / 2.0)+.5,
+                    Math.floor((yMin + yMax) / 2.0),
+                    1, 2);
+
+        }
+        gp.add(door,doorRect);
     }
 
     @Override
     public boolean isDone() {
-        return false;
+        return done;
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 import com.eds.netaclon.puzzlegraph.graphic.GraphicPuzzle;
+import com.eds.netaclon.puzzlegraph.renderer.flockingroom.GraphicPuzzleProcessor;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.*;
 import com.eds.netaclon.puzzlegraph.plotseed.PlotSeeder;
 import com.eds.netaclon.puzzlegraph.plotseed.impl.LockedContainerPlot;
@@ -46,21 +47,27 @@ public class PuzzleCreator {
         logger.info(puz.printInfo());
         GraphicPuzzle graphicPuzzle = new GraphicPuzzle(puz);
 
-        TickWiseOperator initialPositioner = new InitialPositioner(graphicPuzzle,rand);
-
-
-
-        TickWiseOperator corridorConnector = new CorridorConnector(graphicPuzzle);
-
-        TickWiseOperator doorCreator = new DoorCreator(graphicPuzzle);
-        FlockingRoomsRenderer flockingRoomsRenderer = new FlockingRoomsRenderer(graphicPuzzle,
-                initialPositioner,
+        TickWiseOperator[] operators = new TickWiseOperator[]{
+                new InitialPositioner(graphicPuzzle, rand),
                 new FlockingRoomsPositioner(graphicPuzzle)
-           //     new SimulatedAnnealingRoomPositioner(graphicPuzzle,rand)
-                ,new Clamper(graphicPuzzle)
-                , corridorConnector
-                ,doorCreator
-                );
+                , new Clamper(graphicPuzzle)
+                , new DoorCreator(graphicPuzzle)};
+
+//        graphicProcessing(graphicPuzzle,
+//              new InitialPositioner(graphicPuzzle,rand),
+//                new FlockingRoomsPositioner(graphicPuzzle)
+//                ,new Clamper(graphicPuzzle)
+//                ,new DoorCreator(graphicPuzzle));
+
+        GraphicPuzzleProcessor graphicPuzzleProcessor = new GraphicPuzzleProcessor(graphicPuzzle,operators);
+        graphicPuzzleProcessor.execute();
+    }
+
+    private static  void graphicProcessing(GraphicPuzzle gp, TickWiseOperator... operators)
+    {
+        FlockingRoomsRenderer flockingRoomsRenderer = new FlockingRoomsRenderer(gp,
+                operators
+        );
         flockingRoomsRenderer.show();
 
     }

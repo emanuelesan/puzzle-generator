@@ -19,6 +19,7 @@ public class GraphicPuzzle {
     private Puzzle puzzle;
     private Map<String, Rectangle> rectsByRoom;
     private Map<String, Rectangle> rectsByItems;
+    private Map<String, Rectangle> rectsByDoor;
 
     public GraphicPuzzle()
     {}
@@ -27,6 +28,8 @@ public class GraphicPuzzle {
       this();
         this.puzzle=puz;
         rectsByRoom = new HashMap<>();
+       rectsByDoor = new HashMap<>();
+
     }
 
     public List<Tuple2<Rectangle, Rectangle>> calculateOverlappingRectangles() {
@@ -88,6 +91,14 @@ public class GraphicPuzzle {
                 .filter(f->f!=null)
                 .map(t->new Tuple2<>(rectsByRoom.get(t._1().getInRoomName()), rectsByRoom.get(t._1().getOutRoomName())))
                 .collect(Collectors.toList());
+    }
+
+    public void add(Door door, Rectangle doorRect) {
+        rectsByDoor.put(door.getName(),doorRect);
+    }
+
+    public Map<String,Rectangle> getRectsByDoor() {
+        return rectsByDoor;
     }
 
     public enum Direction {
