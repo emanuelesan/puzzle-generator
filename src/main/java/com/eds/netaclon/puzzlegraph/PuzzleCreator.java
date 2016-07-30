@@ -53,14 +53,10 @@ public class PuzzleCreator {
                 , new Clamper(graphicPuzzle)
                 , new DoorCreator(graphicPuzzle)};
 
-//        graphicProcessing(graphicPuzzle,
-//              new InitialPositioner(graphicPuzzle,rand),
-//                new FlockingRoomsPositioner(graphicPuzzle)
-//                ,new Clamper(graphicPuzzle)
-//                ,new DoorCreator(graphicPuzzle));
+        graphicProcessing(graphicPuzzle,operators);
 
-        GraphicPuzzleProcessor graphicPuzzleProcessor = new GraphicPuzzleProcessor(graphicPuzzle,operators);
-        graphicPuzzleProcessor.execute();
+//        GraphicPuzzleProcessor graphicPuzzleProcessor = new GraphicPuzzleProcessor(graphicPuzzle,operators);
+//        graphicPuzzleProcessor.execute();
     }
 
     private static  void graphicProcessing(GraphicPuzzle gp, TickWiseOperator... operators)

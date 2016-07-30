@@ -3,7 +3,6 @@
 */.project
 .DS_Store
 */.DS_Store
-.idea/*
 .settings/
 *.settings/
 *.swp
