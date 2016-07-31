@@ -59,6 +59,26 @@ public class PuzzleCreator {
 //        graphicPuzzleProcessor.execute();
     }
 
+    public static GraphicPuzzle createPuzzle(int seed, int complexity)
+    {
+        Random rand = new Random(seed);
+
+        Puzzle puz = createPuzzleGraph(rand, complexity);
+        logger.info(puz.printInfo());
+        GraphicPuzzle graphicPuzzle = new GraphicPuzzle(puz);
+
+        TickWiseOperator[] operators = new TickWiseOperator[]{
+                new InitialPositioner(graphicPuzzle, rand),
+                new FlockingRoomsPositioner(graphicPuzzle)
+                , new Clamper(graphicPuzzle)
+                , new DoorCreator(graphicPuzzle)};
+
+                GraphicPuzzleProcessor graphicPuzzleProcessor = new GraphicPuzzleProcessor(graphicPuzzle,operators);
+        graphicPuzzleProcessor.execute();
+        return graphicPuzzle;
+
+    }
+
     private static  void graphicProcessing(GraphicPuzzle gp, TickWiseOperator... operators)
     {
         FlockingRoomsRenderer flockingRoomsRenderer = new FlockingRoomsRenderer(gp,

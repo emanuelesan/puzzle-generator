@@ -56,9 +56,9 @@ public class CorridorConnector implements TickWiseOperator {
             }
         }
         if (direction == GraphicPuzzle.Direction.VERTICAL) {
-            corridor.scale(1D / corridor.width(), 1);
+            corridor.scale(1f / corridor.width(), 1);
         } else {
-            corridor.scale(1, 1D / corridor.height());
+            corridor.scale(1, 1f / corridor.height());
         }
         return corridor;
     }

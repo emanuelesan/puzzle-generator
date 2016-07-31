@@ -16,7 +16,7 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
     private final BufferedImage image;
     private final Graphics2D g;
     private final Rectangle view;
-    private final double height = 600, width = 800;
+    private final float height = 600, width = 800;
 
 
     public FlockingRoomsRenderer(GraphicPuzzle gp, TickWiseOperator... operators) {
@@ -75,23 +75,23 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
 
 
     private void drawRectangle(Graphics2D g, Rectangle r, Color color) {
-        final double xMin = transformX(r.xMin());
-        final double xMax = transformX(r.xMax());
-        final double yMin = transformY(r.yMin());
-        final double yMax = transformY(r.yMax());
+        final float xMin = transformX(r.xMin());
+        final float xMax = transformX(r.xMax());
+        final float yMin = transformY(r.yMin());
+        final float yMax = transformY(r.yMax());
         g.setColor(color);
         g.drawRect(rnd(xMin), rnd(yMin), Math.max(rnd(xMax - xMin), 1), Math.max(rnd(yMax - yMin), 1));
     }
 
-    private double transformY(Double y) {
+    private float transformY(float y) {
         return (y - view.yMin()) / (view.yMax() - view.yMin()) * height;
     }
 
-    private double transformX(Double x) {
+    private float transformX(float x) {
         return (x - view.xMin()) / (view.xMax() - view.xMin()) * width;
     }
 
-    private int rnd(double value) {
+    private int rnd(float value) {
         return (int) value;
     }
 
@@ -106,8 +106,8 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
             }
         }
         //view must have the same aspect ratio of the window.
-        double viewRatio = view.width() / view.height();
-        double windowRatio = width / height;
+        float viewRatio = view.width() / view.height();
+        float windowRatio = width / height;
         if (viewRatio < windowRatio) {   //width must become larger
             view.scale(windowRatio / viewRatio, 1);
         } else {   //height must become larger
@@ -120,17 +120,17 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
 
     private void drawGrid() {
         g.setColor(Color.darkGray);
-        double xStart = Math.round(view.xMin());
-        double xEnd = Math.round(view.xMax());
-        for (double col = xStart; col <= xEnd; col++) {
-            double transCol = transformX(col);
+        float xStart = Math.round(view.xMin());
+        float xEnd = Math.round(view.xMax());
+        for (float col = xStart; col <= xEnd; col++) {
+            float transCol = transformX(col);
             g.drawLine(rnd(transCol), 0, rnd(transCol), rnd(height));
         }
 
-        double yStart = Math.round(view.yMin());
-        double yEnd = Math.round(view.yMax());
-        for (double row = yStart; row <= yEnd; row++) {
-            double transRow = transformY(row);
+        float yStart = Math.round(view.yMin());
+        float yEnd = Math.round(view.yMax());
+        for (float row = yStart; row <= yEnd; row++) {
+            float transRow = transformY(row);
             g.drawLine(0, rnd(transRow), rnd(width), rnd(transRow));
         }
 
@@ -149,9 +149,9 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
 
         view.push(new Vector2(center.x(), center.y()).minus(new Vector2(view.x(), view.y())).times(.1));
         view.move();
-        double widthRatio = (center.width() + 4) / view.width();
-        double heightRation = (center.height() + 4) / view.height();
-        double ratio = widthRatio < heightRation ? heightRation : widthRatio;
+        float widthRatio = (center.width() + 4) / view.width();
+        float heightRation = (center.height() + 4) / view.height();
+        float ratio = widthRatio < heightRation ? heightRation : widthRatio;
         view.scale(ratio);
     }
 

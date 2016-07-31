@@ -15,8 +15,8 @@ import java.util.logging.Logger;
 public class InitialPositioner implements TickWiseOperator {
     private static final Logger logger = Logger.getLogger("logger");
 
-    private static final double X_MAX = 6;
-    private static final double Y_MAX = 4;
+    private static final float X_MAX = 6;
+    private static final float Y_MAX = 4;
     private final Puzzle puz;
     private final GraphicPuzzle graphicPuzzle;
     private final Random rand;
@@ -56,8 +56,8 @@ public class InitialPositioner implements TickWiseOperator {
                 int xMin = (int) ((pos.x +otherRoomPosition.x)/2.0 * 2*Math.max(X_MAX, Y_MAX));
                 int yMin = (int) ((pos.y  +otherRoomPosition.y/2.0)* 2*Math.max(X_MAX, Y_MAX));
                 int sizeMult = room.getItemNames().size() + room.getDoorNames().size();
-                double widthModifier = random.nextDouble() > 0.5 ? 1 : 0;
-                double heightModifier = random.nextDouble() > 0.5 ? 1 : 0;
+                float widthModifier = random.nextDouble() > 0.5f ? 1 : 0;
+                float heightModifier = random.nextDouble() > 0.5f ? 1 : 0;
                 rectangle = new Rectangle(xMin, yMin,
                         xMin + 2 * Math.min(sizeMult + 1 + widthModifier, X_MAX),
                         yMin + 2 * Math.min(sizeMult + 1 + heightModifier, Y_MAX));
@@ -67,8 +67,8 @@ public class InitialPositioner implements TickWiseOperator {
                 int xMin = (int) (pos.x * 2* Math.max(X_MAX, Y_MAX));
                 int yMin = (int) (pos.y * 2*Math.max(X_MAX, Y_MAX));
                 int sizeMult = room.getItemNames().size() + room.getDoorNames().size();
-                double widthModifier = random.nextDouble() > 0.5 ? 1 : 0;
-                double heightModifier = random.nextDouble() > 0.5 ? 1 : 0;
+                float widthModifier = random.nextDouble() > 0.5 ? 1 : 0;
+                float heightModifier = random.nextDouble() > 0.5 ? 1 : 0;
                 rectangle = new Rectangle(xMin, yMin,
                         xMin + 2 * Math.min(sizeMult + 1 + widthModifier, X_MAX),
                         yMin + 2 * Math.min(sizeMult + 1 + heightModifier, Y_MAX));

@@ -9,15 +9,15 @@ import java.io.Serializable;
  * aaah the rectangle class, an evergreen.
  */
 public class Rectangle implements Serializable {
-    private double x, y, xMin, yMin, xMax, yMax;
+    private float x, y, xMin, yMin, xMax, yMax;
 
-    private double xVel;
-    private double yVel;
+    private float xVel;
+    private float yVel;
 
     public Rectangle() {
     }
 
-    public Rectangle(double xMin, double yMin, double xMax, double yMax) {
+    public Rectangle(float xMin, float yMin, float xMax, float yMax) {
         this();
         this.xMin = xMin;
         this.yMin = yMin;
@@ -42,7 +42,7 @@ public class Rectangle implements Serializable {
         yVel = 0;
     }
 
-    public double intersectionArea(Rectangle r) {
+    public float intersectionArea(Rectangle r) {
         if (intersects(r)) {
             return intersection(r).area();
         }
@@ -61,7 +61,7 @@ public class Rectangle implements Serializable {
         return r.xMax >= xMin && r.xMin <= xMax && r.yMax >= yMin && r.yMin <= yMax;
     }
 
-    public double area() {
+    public float area() {
         return (xMax - xMin) * (yMax - yMin);
     }
 
@@ -120,35 +120,35 @@ public class Rectangle implements Serializable {
         return new Rectangle(xMin, yMin, xMax, yMax);
     }
 
-    public double width() {
+    public float width() {
         return xMax - xMin;
     }
 
-    public double height() {
+    public float height() {
         return yMax - yMin;
     }
 
-    public double xMin() {
+    public float xMin() {
         return xMin;
     }
 
-    public double xMax() {
+    public float xMax() {
         return xMax;
     }
 
-    public double yMin() {
+    public float yMin() {
         return yMin;
     }
 
-    public double yMax() {
+    public float yMax() {
         return yMax;
     }
 
-    public double x() {
+    public float x() {
         return x;
     }
 
-    public double y() {
+    public float y() {
         return y;
     }
 
@@ -157,13 +157,13 @@ public class Rectangle implements Serializable {
      *
      * @param ratio factor by which distance from center will be changed.
      */
-    public void scale(double ratio) {
+    public void scale(float ratio) {
         scale(ratio, ratio);
 
     }
 
 
-    public void scale(double xRatio, double yRatio) {
+    public void scale(float xRatio, float yRatio) {
         xMin = x - (x - xMin) * xRatio;
         xMax = x + (xMax - x) * xRatio;
 
@@ -181,7 +181,7 @@ public class Rectangle implements Serializable {
 
     }
 
-    public static Rectangle fromCenter(double xCenter, double yCenter, double width, double height) {
+    public static Rectangle fromCenter(float xCenter, float yCenter, float width, float height) {
         return new Rectangle(xCenter - width/2, yCenter - height/2,
                 xCenter + width/2, yCenter + height/2
         );

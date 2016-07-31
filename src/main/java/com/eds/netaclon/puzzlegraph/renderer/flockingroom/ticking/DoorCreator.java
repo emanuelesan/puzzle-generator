@@ -42,21 +42,21 @@ public class DoorCreator implements TickWiseOperator {
         Rectangle r1 = rectsByRoom.get(door.getInRoomName());
         Rectangle r2 = rectsByRoom.get(door.getOutRoomName());
 
-        double xMin = Math.max(r1.xMin(), r2.xMin()),
+        float xMin = Math.max(r1.xMin(), r2.xMin()),
                 yMin = Math.max(r1.yMin(), r2.yMin()),
                 xMax = Math.min(r1.xMax(), r2.xMax()),
                 yMax = Math.min(r1.yMax(), r2.yMax());
 
         Rectangle doorRect;
         if (yMax - yMin > xMax - xMin) {
-            doorRect=Rectangle.fromCenter(Math.floor((xMin + xMax) / 2.0),
-                    Math.floor((yMin + yMax) / 2.0)+.5,
+            doorRect=Rectangle.fromCenter((int)((xMin + xMax) / 2.0f),
+                    (int)((yMin + yMax) / 2.0f)+.5f,
                     2, 1);
         }
         else
         {
-            doorRect=Rectangle.fromCenter(Math.floor((xMin + xMax) / 2.0)+.5,
-                    Math.floor((yMin + yMax) / 2.0),
+            doorRect=Rectangle.fromCenter((int)((xMin + xMax) / 2.0f)+.5f,
+                    (int)((yMin + yMax) / 2.0f),
                     1, 2);
 
         }
