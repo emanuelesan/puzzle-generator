@@ -12,7 +12,7 @@ import com.eds.netaclon.puzzlegraph.operator.MinimumSpanningTreeCalculator;
 
 /**	Tarjan's Bridge-finding algorithm
  * 
- *  - Find a spanning forest of G (PuzzleExpander can only generate minimum spanning trees)
+ *  - Find a spanning forest of G (PuzzleExpander can only generate graphs equal to their minimum spanning trees)
  *  - Create a rooted forest F from the spanning tree
  *  - Traverse the forest F in preorder and number the nodes. Parent nodes in the forest now have lower numbers than child nodes.
  *  - For each node v in preorder, do:

@@ -15,6 +15,7 @@ public class DoorCreator implements TickWiseOperator {
 
     private final GraphicPuzzle gp;
     private boolean done = false;
+    private boolean stillValid =true;
 
     public DoorCreator(GraphicPuzzle gp) {
         this.gp = gp;
@@ -47,6 +48,11 @@ public class DoorCreator implements TickWiseOperator {
                 xMax = Math.min(r1.xMax(), r2.xMax()),
                 yMax = Math.min(r1.yMax(), r2.yMax());
 
+        if (Math.round(yMax - yMin + xMax - xMin)<1)
+        {
+            stillValid=false;
+        }
+
         Rectangle doorRect;
         if (yMax - yMin > xMax - xMin) {
             doorRect=Rectangle.fromCenter((int)((xMin + xMax) / 2.0f),
@@ -70,6 +76,6 @@ public class DoorCreator implements TickWiseOperator {
 
     @Override
     public boolean isPuzzleStillValid() {
-        return true;
+        return stillValid;
     }
 }

@@ -28,4 +28,24 @@ public class Key implements Item {
     public String getName() {
         return name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Key key = (Key) o;
+
+        if (lockableName != null ? !lockableName.equals(key.lockableName) : key.lockableName != null) return false;
+        return name != null ? name.equals(key.name) : key.name == null;
+
+    }
+
+    @Override
+    public String toString() {
+        return "Key{" +
+                "lockableName='" + lockableName + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

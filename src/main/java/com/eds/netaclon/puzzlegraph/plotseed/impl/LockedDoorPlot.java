@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import com.eds.netaclon.puzzlegraph.item.Door;
+import com.eds.netaclon.puzzlegraph.item.Item;
 import com.eds.netaclon.puzzlegraph.item.Key;
 import com.eds.netaclon.puzzlegraph.Puzzle;
 import com.eds.netaclon.puzzlegraph.PuzzleCreationConstants;
@@ -27,11 +28,8 @@ import com.eds.netaclon.puzzlegraph.util.BridgeFinder;
 public class LockedDoorPlot implements PlotSeeder {
 
 
-    private static final double germinationChance = .5;
-    private final Random rand;
 
-    public LockedDoorPlot(Random rand) {
-        this.rand = rand;
+    public LockedDoorPlot() {
     }
 	/**
 	 * returns true whether the seed can germinate.
@@ -42,8 +40,8 @@ public class LockedDoorPlot implements PlotSeeder {
                 .findBridges()
                 .stream()
                 .filter(door->canGerminate(door, puz))
-                .map(bridge -> new LockedDoorPlotSeed(puz, bridge))
-                .filter(n -> rand.nextDouble() < germinationChance)
+				.sorted(Item::sortByName)
+				.map(bridge -> new LockedDoorPlotSeed(puz, bridge))
                 .collect(Collectors.toList());
 	}
 	

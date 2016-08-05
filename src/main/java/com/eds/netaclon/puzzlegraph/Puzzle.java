@@ -4,9 +4,15 @@ import com.eds.netaclon.puzzlegraph.item.*;
 import com.eds.netaclon.puzzlegraph.util.SequenceGenerator;
 
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class Puzzle {
+	private static final Logger logger = Logger.getLogger(Puzzle.class.getName());
+	private static final String KEY = "key";
+	private static final String CONTAINER = "container";
+	private static final String ROOM = "room";
+
 
 	private final Map<String, Room> roomMap;
 	private final Map<String, Key> keyMap;
@@ -18,6 +24,8 @@ public class Puzzle {
 
 	private Room start;
 	private Room end;
+
+	private SequenceGenerator sequenceGenerator = new SequenceGenerator();
 
 	public Puzzle()
 	{
@@ -74,7 +82,7 @@ public class Puzzle {
 
 	/**@return a room */
 	private Room addRoom() {
-		Room newRoom = new Room("R"+SequenceGenerator.incrementAndGet("room"));
+		Room newRoom = new Room("R"+sequenceGenerator.incrementAndGet(ROOM));
 		roomMap.put(newRoom.getName(), newRoom);
 		return newRoom;
 	}
@@ -126,7 +134,7 @@ public class Puzzle {
     }
 
 	private Door connectInwardRoom(Room outRoom, Room inRoom) {
-		Door door = new Door(outRoom, inRoom, "D"+SequenceGenerator.incrementAndGet("door"));
+		Door door = new Door(outRoom, inRoom, "D"+sequenceGenerator.incrementAndGet("door"));
 		doorMap.put(door.getName(),door);
 		outRoom.addDoor(door);
 		inRoom.addDoor(door);
@@ -138,14 +146,14 @@ public class Puzzle {
 	}
 
 	public Container createContainer(Item item) {
-		String containerName = "C" + SequenceGenerator.incrementAndGet("container");
+		String containerName = "C" + sequenceGenerator.incrementAndGet(CONTAINER);
 		Container container = new Container(item, containerName);
 		containerMap.put(containerName,container);
 		return container;
 	}
 
 	public Key createKey(Lockable lockable) {
-		String keyName = "K" + SequenceGenerator.incrementAndGet("key");
+		String keyName = "K" + sequenceGenerator.incrementAndGet(KEY);
 		Key key = new Key(lockable,keyName);
 		keyMap.put(keyName,key);
 		return key;
@@ -156,7 +164,7 @@ public class Puzzle {
 		return
 				room.getDoorNames().stream().map(doorMap::get).collect(Collectors.toList());}
 
-	 Door getDoor(String doorName) {
+	 private Door getDoor(String doorName) {
 		return doorMap.get(doorName);
 	}
 
@@ -165,7 +173,7 @@ public class Puzzle {
 	}
 
 
-	 Item getItem(String itemName) {
+	 private Item getItem(String itemName) {
 		 	return items.stream().map(map->map.get(itemName)).filter(n->n!=null).findFirst().get();
 	}
 
@@ -173,5 +181,42 @@ public class Puzzle {
 		return itemNames.stream().map(this::getItem).collect(Collectors.toList());
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Puzzle)) return false;
 
+		Puzzle puzzle = (Puzzle) o;
+
+		if (roomMap != null ? !roomMap.equals(puzzle.roomMap) : puzzle.roomMap != null) {
+			logger.info("roommap : \n"+roomMap+" != \n"+puzzle.roomMap);
+			return false;}
+		if (keyMap != null ? !keyMap.equals(puzzle.keyMap) : puzzle.keyMap != null) {
+			logger.info("keyMap : \n"+keyMap+" != \n"+puzzle.keyMap);
+			return false;}
+		if (doorMap != null ? !doorMap.equals(puzzle.doorMap) : puzzle.doorMap != null) {
+			logger.info("doorMap : \n"+doorMap+" != \n"+puzzle.doorMap);
+			return false;}
+		if (containerMap != null ? !containerMap.equals(puzzle.containerMap) : puzzle.containerMap != null) {
+			logger.info("containerMap : \n"+containerMap+" != \n"+puzzle.containerMap);
+			return false;
+		}
+		if (lockables != null ? !lockables.equals(puzzle.lockables) : puzzle.lockables != null){
+			logger.info("lockables : \n"+lockables+" != \n"+puzzle.lockables);
+			return false;
+		}
+		if (items != null ? !items.equals(puzzle.items) : puzzle.items != null)
+		{
+			logger.info("items : \n"+items+" != \n"+puzzle.items);
+			return false;
+		}
+//		if (start != null ? !start.equals(puzzle.start) : puzzle.start != null) return false;
+//		return end != null ? end.equals(puzzle.end) : puzzle.end == null;
+		return true;
+
+	}
+
+	public List<Map<String, ? extends Item>> items() {
+		return items;
+	}
 }

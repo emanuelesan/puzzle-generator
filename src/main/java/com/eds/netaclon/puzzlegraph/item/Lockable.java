@@ -7,4 +7,7 @@ public interface Lockable extends Item {
 	boolean locked();
 
 
+
+
+
 }

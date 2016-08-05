@@ -41,4 +41,26 @@ public class Container implements Lockable {
     public String getName() {
         return name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Container container = (Container) o;
+
+        if (keyNames != null ? !keyNames.equals(container.keyNames) : container.keyNames != null) return false;
+        if (itemNames != null ? !itemNames.equals(container.itemNames) : container.itemNames != null) return false;
+        return name != null ? name.equals(container.name) : container.name == null;
+
+    }
+
+    @Override
+    public String toString() {
+        return "Container{" +
+                "keyNames=" + keyNames +
+                ", itemNames=" + itemNames +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

@@ -8,10 +8,7 @@ import com.eds.netaclon.puzzlegraph.plotseed.PlotSeed;
 import com.eds.netaclon.puzzlegraph.plotseed.PlotSeeder;
 import com.eds.netaclon.puzzlegraph.util.BreadthFirstExplorer;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -22,25 +19,31 @@ public class LockedContainerPlot implements PlotSeeder {
 
     private static final Logger logger = Logger.getLogger("logger");
 
-    private static final double germinationChance = .3;
-    private final Random rand;
 
-    public LockedContainerPlot(Random rand) {
-        this.rand = rand;
+    public LockedContainerPlot() {
+
     }
 
 
     public List<PlotSeed> semina(Puzzle puz) {
-        return puz
+        List<PlotSeed> collect = puz
                 .allRooms()
                 .stream()
-                .flatMap(room -> puz.getItems(room.getItemNames()).stream().filter(item -> !(item instanceof Container)).map(item -> new LockedContainerPlotSeed(room, item, puz)))
-                .filter(n -> rand.nextDouble() < germinationChance).collect(Collectors.toList());
+                .flatMap(room ->
+                        puz
+                            .getItems(room.getItemNames())
+                            .stream()
+                            .filter(item -> !(item instanceof Container))
+                            .map(item -> new LockedContainerPlotSeed(room, item, puz))
+                )
+                .sorted(LockedContainerPlotSeed::sortByItemName)
+                .collect(Collectors.toList());
+        return collect;
 
 
     }
 
-    private class LockedContainerPlotSeed implements PlotSeed {
+    private static class LockedContainerPlotSeed implements PlotSeed {
         private final Item item;
         private final Random rand;
         private Puzzle puz;
@@ -56,7 +59,7 @@ public class LockedContainerPlot implements PlotSeeder {
 
         public void germinate() {
             room.removeItem(item);
-            Container container =puz.createContainer(item);
+            Container container = puz.createContainer(item);
             room.addItem(container);
             lock(container);
 
@@ -66,14 +69,14 @@ public class LockedContainerPlot implements PlotSeeder {
         private void lock(Container container) {
 
 
-            List<Room> roomsToHideKeyIn = new LinkedList<>(puz.allRooms());
+            List<Room> roomsToHideKeyIn = new ArrayList<>(puz.allRooms());
             roomsToHideKeyIn.remove(room);
             //container contains only one item right now.
             // if item is a key, find all rooms the bisection reachable from the start
             // for that key and randomly choose one room.
             Optional.of(item)
-                    .filter(item->item instanceof Key)
-                    .map(item->((Key)item).getLockable(puz))
+                    .filter(item -> item instanceof Key)
+                    .map(item -> ((Key) item).getLockable(puz))
                     .filter(lockable -> lockable instanceof Door)
                     .ifPresent(door ->
                             {
@@ -88,12 +91,17 @@ public class LockedContainerPlot implements PlotSeeder {
                             }
                     );
 
-            if (roomsToHideKeyIn.size()>0) {
+            if (roomsToHideKeyIn.size() > 0) {
+                roomsToHideKeyIn.sort(Item::sortByName);
                 Room selectedRoom = roomsToHideKeyIn.get(rand.nextInt(roomsToHideKeyIn.size()));
-                Key k =puz.createKey(container);
+                Key k = puz.createKey(container);
                 container.addKey(k);
                 selectedRoom.addItem(k);
             }
+        }
+
+        public static int sortByItemName(LockedContainerPlotSeed seed1, LockedContainerPlotSeed seed2) {
+            return Item.sortByName(seed1.item,seed2.item);
         }
     }
 }

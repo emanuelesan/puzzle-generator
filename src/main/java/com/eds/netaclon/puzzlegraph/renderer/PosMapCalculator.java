@@ -38,7 +38,7 @@ public class PosMapCalculator {
             int d1 = o1.getDepth();
             int d2 = o2.getDepth();
             if (d1 < d2) return -1;
-            if (d1 == d2) return 0;
+            if (d1 == d2) return o1.getName().compareTo(o2.getName());
             return 1;
         });
         List<IntPosition> candidates = new LinkedList<>();

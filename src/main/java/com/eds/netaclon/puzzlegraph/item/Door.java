@@ -13,9 +13,6 @@ public class Door implements Lockable{
     private String inRoomName;
     private String name;
 
-    public Door()
-    {
-    }
 
 	public Door(Room outRoom, Room inRoom, String name) {
 		this.outRoomName=outRoom.getName();
@@ -61,4 +58,20 @@ public class Door implements Lockable{
 	public List<String> getKeyNames() {
 		return keyNames;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Door door = (Door) o;
+
+		if (keyNames != null ? !keyNames.equals(door.keyNames) : door.keyNames != null) return false;
+		if (outRoomName != null ? !outRoomName.equals(door.outRoomName) : door.outRoomName != null) return false;
+		if (inRoomName != null ? !inRoomName.equals(door.inRoomName) : door.inRoomName != null) return false;
+		return name != null ? name.equals(door.name) : door.name == null;
+
+	}
+
+
 }

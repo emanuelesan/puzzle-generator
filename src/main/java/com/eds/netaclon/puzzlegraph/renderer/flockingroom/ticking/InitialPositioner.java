@@ -8,9 +8,11 @@ import com.eds.netaclon.puzzlegraph.renderer.PosMapCalculator;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Rectangle;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class InitialPositioner implements TickWiseOperator {
     private static final Logger logger = Logger.getLogger("logger");
@@ -39,7 +41,8 @@ public class InitialPositioner implements TickWiseOperator {
         Map<IntPosition, Room> posMap = posCa.getPosMap();
 
         Map<String, Rectangle> rectangleByRoomName = new HashMap<>();
-        for (Room room : puz.allRooms()) {
+        List<Room> orderedRooms = puz.allRooms().stream().sorted((r1, r2) -> r1.getName().compareTo(r2.getName())).collect(Collectors.toList());
+        for (Room room : orderedRooms) {
             IntPosition pos = roomIntPositionMap.get(room);
             Rectangle rectangle;
             if (!posMap.get(pos).equals(room))

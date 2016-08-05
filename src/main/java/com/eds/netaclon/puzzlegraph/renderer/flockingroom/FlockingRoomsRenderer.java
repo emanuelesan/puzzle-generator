@@ -9,6 +9,7 @@ import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperat
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Map;
 
 
 public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Visualizer {
@@ -17,11 +18,14 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
     private final Graphics2D g;
     private final Rectangle view;
     private final float height = 600, width = 800;
+    private final Map<String, Rectangle> rectsByRoom;
+    private final GraphicPuzzle graphicPuzzle;
 
 
     public FlockingRoomsRenderer(GraphicPuzzle gp, TickWiseOperator... operators) {
         super(gp,operators);
-
+        this.rectsByRoom = gp.getRectsByRoom();
+        this.graphicPuzzle  =gp;
         this.view = new Rectangle(0, 0, width, height);
 
         image = new BufferedImage((int) width, (int) height, BufferedImage.TYPE_INT_ARGB);
@@ -64,9 +68,9 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
         drawGrid();
 
         rectsByRoom.entrySet().forEach(entry -> drawRectangle(g, entry.getValue(), colorOf(entry.getKey())));
-//        g.setColor(Color.ORANGE);
-//        puz.getDoorMap().values()
-//                .forEach(door -> drawDoor(g, door));
+        g.setColor(Color.ORANGE);
+        puz.getDoorMap().values()
+                .forEach(door -> drawDoor(g, door));
         graphicPuzzle.getRectsByDoor().values().forEach(room -> drawRectangle(g, room, Color.CYAN));
 
 
