@@ -2,13 +2,19 @@ package com.eds.netaclon.puzzlegraph.plotseed.impl;
 
 import com.eds.netaclon.puzzlegraph.Puzzle;
 import com.eds.netaclon.puzzlegraph.Room;
-import com.eds.netaclon.puzzlegraph.item.*;
+import com.eds.netaclon.puzzlegraph.item.Container;
+import com.eds.netaclon.puzzlegraph.item.Door;
+import com.eds.netaclon.puzzlegraph.item.Item;
+import com.eds.netaclon.puzzlegraph.item.Key;
 import com.eds.netaclon.puzzlegraph.operator.PartitionCalculator;
 import com.eds.netaclon.puzzlegraph.plotseed.PlotSeed;
 import com.eds.netaclon.puzzlegraph.plotseed.PlotSeeder;
 import com.eds.netaclon.puzzlegraph.util.BreadthFirstExplorer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -80,13 +86,13 @@ public class LockedContainerPlot implements PlotSeeder {
                     .filter(lockable -> lockable instanceof Door)
                     .ifPresent(door ->
                             {
-                                logger.info("starting Partition Calculator..");
+                                logger.fine("starting Partition Calculator..");
                                 Room inRoom = ((Door) door).getInRoom(puz);
                                 PartitionCalculator partitionCalculator = new PartitionCalculator(inRoom);
                                 BreadthFirstExplorer.attraversaPuz(puz, partitionCalculator);
                                 roomsToHideKeyIn.removeAll(partitionCalculator.getEndPartition());
 
-                                logger.info("finished Partition Calculator.. i'm going to select among  Partition:" + roomsToHideKeyIn.size());
+                                logger.fine("finished Partition Calculator.. i'm going to select among  Partition:" + roomsToHideKeyIn.size());
 
                             }
                     );

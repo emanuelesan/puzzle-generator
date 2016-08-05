@@ -10,8 +10,6 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by emanuelesan on 31/07/16.
  */
@@ -26,7 +24,7 @@ public class PuzzleCreatorTest {
         logger.setLevel(Level.FINER);
         logger.info("doing what's right hell yea");
         Puzzle puzz = createPuzzle();
-        for (int i =0;i<20;i++) {
+        for (int i = 0; i < 2500; i++) {
             Puzzle puz = createPuzzle();
             if (!puzz.equals(puz))
             {

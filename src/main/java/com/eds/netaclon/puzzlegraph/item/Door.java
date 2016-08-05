@@ -3,7 +3,6 @@ package com.eds.netaclon.puzzlegraph.item;
 import com.eds.netaclon.puzzlegraph.Puzzle;
 import com.eds.netaclon.puzzlegraph.Room;
 
-import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
