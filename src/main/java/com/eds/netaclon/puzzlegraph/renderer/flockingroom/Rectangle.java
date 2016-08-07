@@ -179,11 +179,14 @@ public class Rectangle implements Serializable {
         yMin = Math.round(yMin);
         yMax = Math.round(yMax);
 
+        x = Math.round(x);
+        y = Math.round(y);
+
     }
 
     public static Rectangle fromCenter(float xCenter, float yCenter, float width, float height) {
-        return new Rectangle(xCenter - width/2, yCenter - height/2,
-                xCenter + width/2, yCenter + height/2
+        return new Rectangle(xCenter - width / 2f, yCenter - height / 2f,
+                xCenter + width / 2f, yCenter + height / 2f
         );
     }
 }

@@ -216,7 +216,7 @@ public class Puzzle {
 
 	}
 
-	public List<Map<String, ? extends Item>> items() {
+	List<Map<String, ? extends Item>> items() {
 		return items;
 	}
 }

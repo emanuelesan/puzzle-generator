@@ -1,11 +1,9 @@
 package com.eds.netaclon.puzzlegraph;
 
-import com.eds.netaclon.puzzlegraph.plotseed.impl.LockedContainerPlot;
-import com.eds.netaclon.puzzlegraph.plotseed.impl.LockedDoorPlot;
+import javaslang.Tuple2;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,26 +21,30 @@ public class PuzzleCreatorTest {
     public void testPuzzlesAreAlwaysTheSame() throws Exception {
         logger.setLevel(Level.FINER);
         logger.info("doing what's right hell yea");
-        Puzzle puzz = createPuzzle();
+        Tuple2<Puzzle, Random> puzz = createPuzzle();
+        long nextRand = puzz._2().nextLong();
         for (int i = 0; i < 2500; i++) {
-            Puzzle puz = createPuzzle();
-            if (!puzz.equals(puz))
-            {
-                System.out.println(puzz.items());
-                System.out.println(puz.items());
+            Tuple2<Puzzle, Random> puz = createPuzzle();
+            if (!puzz._1().equals(puz._1())) {
+                System.out.println(puzz._1().items());
+                System.out.println(puz._1().items());
 
-                Assert.assertTrue("iteration "+i,false);
+                Assert.assertTrue("iteration " + i, false);
 
             }
+            if (nextRand != puz._2().nextLong()) {
+                Assert.assertTrue("random state was inconsistent at iteration " + i, false);
+            }
+
         }
     }
 
-    private Puzzle createPuzzle()
-    {Random rand = new Random(213);
-        PuzzleCreator puzzleCreator= new PuzzleCreator(Arrays.asList( new LockedDoorPlot()
-                ,new LockedContainerPlot() )
-                ,rand);
-        return puzzleCreator.createPuzzle(11);
+    private Tuple2<Puzzle, Random> createPuzzle() {
+        Random rand = new Random(213);
+
+        return new Tuple2<>(PuzzleCreator.createPuzzleGraph(rand, 11)
+                , rand);
     }
+
 
 }

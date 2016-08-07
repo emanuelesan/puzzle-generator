@@ -3,10 +3,8 @@ package com.eds.netaclon.puzzlegraph.renderer.flockingroom;
 import com.eds.netaclon.puzzlegraph.Puzzle;
 import com.eds.netaclon.puzzlegraph.graphic.GraphicPuzzle;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperator;
-import com.google.gson.GsonBuilder;
 
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Queue;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -26,7 +24,6 @@ public class GraphicPuzzleProcessor {
 
     public void execute() {
         while(!processingStep()) {
-            System.out.print(".");
         }
         logger.info("finished!!");
 

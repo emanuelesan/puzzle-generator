@@ -1,6 +1,5 @@
 package com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking;
 
-import com.eds.netaclon.puzzlegraph.Room;
 import com.eds.netaclon.puzzlegraph.graphic.GraphicPuzzle;
 import com.eds.netaclon.puzzlegraph.item.Door;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Rectangle;
@@ -15,7 +14,6 @@ public class DoorCreator implements TickWiseOperator {
 
     private final GraphicPuzzle gp;
     private boolean done = false;
-    private boolean stillValid =true;
 
     public DoorCreator(GraphicPuzzle gp) {
         this.gp = gp;
@@ -36,35 +34,24 @@ public class DoorCreator implements TickWiseOperator {
     /**
      * creates a graphical representation of a door.
      *
-     * @param door
      */
     private void createDoor(Door door) {
         Map<String, Rectangle> rectsByRoom = gp.getRectsByRoom();
         Rectangle r1 = rectsByRoom.get(door.getInRoomName());
         Rectangle r2 = rectsByRoom.get(door.getOutRoomName());
 
-        float xMin = Math.max(r1.xMin(), r2.xMin()),
-                yMin = Math.max(r1.yMin(), r2.yMin()),
-                xMax = Math.min(r1.xMax(), r2.xMax()),
-                yMax = Math.min(r1.yMax(), r2.yMax());
-
-        if (Math.round(yMax - yMin + xMax - xMin)<1)
-        {
-            stillValid=false;
-        }
+        Rectangle intersection = r1.intersection(r2);
 
         Rectangle doorRect;
-        if (yMax - yMin > xMax - xMin) {
-            doorRect=Rectangle.fromCenter((int)((xMin + xMax) / 2.0f),
-                    (int)((yMin + yMax) / 2.0f)+.5f,
+        if (intersection.height() > intersection.width()) {
+            doorRect = Rectangle.fromCenter((int) (intersection.x()),
+                    (float) (Math.floor(intersection.y()) + .5f),
                     2, 1);
         }
         else
         {
-            doorRect=Rectangle.fromCenter((int)((xMin + xMax) / 2.0f)+.5f,
-                    (int)((yMin + yMax) / 2.0f),
-                    1, 2);
-
+            doorRect = Rectangle.fromCenter((float) (Math.floor(intersection.x()) + .5f),
+                    (int) (intersection.y()), 1, 2);
         }
         gp.add(door,doorRect);
     }
@@ -76,6 +63,6 @@ public class DoorCreator implements TickWiseOperator {
 
     @Override
     public boolean isPuzzleStillValid() {
-        return stillValid;
+        return true;
     }
 }

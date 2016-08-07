@@ -1,18 +1,17 @@
 package com.eds.netaclon.puzzlegraph.plotseed.impl;
 
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-
-import com.eds.netaclon.puzzlegraph.item.Door;
-import com.eds.netaclon.puzzlegraph.item.Item;
-import com.eds.netaclon.puzzlegraph.item.Key;
 import com.eds.netaclon.puzzlegraph.Puzzle;
 import com.eds.netaclon.puzzlegraph.PuzzleCreationConstants;
 import com.eds.netaclon.puzzlegraph.Room;
+import com.eds.netaclon.puzzlegraph.item.Door;
+import com.eds.netaclon.puzzlegraph.item.Item;
+import com.eds.netaclon.puzzlegraph.item.Key;
 import com.eds.netaclon.puzzlegraph.plotseed.PlotSeed;
 import com.eds.netaclon.puzzlegraph.plotseed.PlotSeeder;
 import com.eds.netaclon.puzzlegraph.util.BridgeFinder;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * a door-item relationship (lock-key). generates a partition of reachable and

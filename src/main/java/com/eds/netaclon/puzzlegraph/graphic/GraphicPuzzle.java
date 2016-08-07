@@ -5,6 +5,7 @@ import com.eds.netaclon.puzzlegraph.item.Door;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Rectangle;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Vector2;
 import javaslang.Tuple2;
+import javaslang.Tuple3;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,14 +16,14 @@ public class GraphicPuzzle {
     private Map<String, Rectangle> rectsByItems;
     private Map<String, Rectangle> rectsByDoor;
 
-    public GraphicPuzzle()
-    {}
+    public GraphicPuzzle() {
+    }
 
     public GraphicPuzzle(Puzzle puz) {
-      this();
-        this.puzzle=puz;
+        this();
+        this.puzzle = puz;
         rectsByRoom = new HashMap<>();
-       rectsByDoor = new HashMap<>();
+        rectsByDoor = new HashMap<>();
 
     }
 
@@ -80,18 +81,25 @@ public class GraphicPuzzle {
         return puzzle;
     }
 
-    public List<Tuple2<Rectangle, Rectangle>> calculateTooDistantRectangles() {
-        return getPuzzle().getDoorMap().values().stream().map(door->this.areRoomsTooFar(door).orElse(null))
-                .filter(f->f!=null)
-                .map(t->new Tuple2<>(rectsByRoom.get(t._1().getInRoomName()), rectsByRoom.get(t._1().getOutRoomName())))
-                .collect(Collectors.toList());
+    public List<Tuple3<Rectangle, Rectangle, Door>> calculateTooDistantRectangles() {
+        return getPuzzle().getDoorMap().values().stream()
+                .map(door -> {
+                    Rectangle inRect = rectsByRoom.get(door.getInRoom(puzzle).getName());
+                    Rectangle outRect = rectsByRoom.get(door.getOutRoom(puzzle).getName());
+                    return new Tuple3<>(inRect, outRect, door);
+                })
+                .filter(t -> {
+                    Rectangle intersection = t._1().intersection(t._2());
+                    return (intersection.width() <= 0 && intersection.height() <= 0);
+                }).collect(Collectors.toList());
+
     }
 
     public void add(Door door, Rectangle doorRect) {
-        rectsByDoor.put(door.getName(),doorRect);
+        rectsByDoor.put(door.getName(), doorRect);
     }
 
-    public Map<String,Rectangle> getRectsByDoor() {
+    public Map<String, Rectangle> getRectsByDoor() {
         return rectsByDoor;
     }
 

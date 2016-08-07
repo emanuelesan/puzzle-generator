@@ -14,7 +14,6 @@ import com.eds.netaclon.puzzlegraph.util.BreadthFirstExplorer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -51,7 +50,6 @@ public class LockedContainerPlot implements PlotSeeder {
 
     private static class LockedContainerPlotSeed implements PlotSeed {
         private final Item item;
-        private final Random rand;
         private Puzzle puz;
         private final Room room;
 
@@ -60,7 +58,6 @@ public class LockedContainerPlot implements PlotSeeder {
             this.room = room;
             this.item = item;
             this.puz = puz;
-            rand = new Random();
         }
 
         public void germinate() {
@@ -99,7 +96,7 @@ public class LockedContainerPlot implements PlotSeeder {
 
             if (roomsToHideKeyIn.size() > 0) {
                 roomsToHideKeyIn.sort(Item::sortByName);
-                Room selectedRoom = roomsToHideKeyIn.get(rand.nextInt(roomsToHideKeyIn.size()));
+                Room selectedRoom = roomsToHideKeyIn.get(0);
                 Key k = puz.createKey(container);
                 container.addKey(k);
                 selectedRoom.addItem(k);

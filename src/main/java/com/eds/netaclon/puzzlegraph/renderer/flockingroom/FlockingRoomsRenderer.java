@@ -51,8 +51,6 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
                     updateImage(imageShow);
                     lastRender = System.currentTimeMillis();
                 }
-
-
             }
 
         } catch (IOException e) {
@@ -73,8 +71,15 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
                 .forEach(door -> drawDoor(g, door));
         graphicPuzzle.getRectsByDoor().values().forEach(room -> drawRectangle(g, room, Color.CYAN));
 
+        drawRoomNames(g);
 
         imageShow.repaint();
+    }
+
+    private void drawRoomNames(Graphics2D g) {
+        rectsByRoom.entrySet().forEach(
+                entry -> g.drawString(entry.getKey(), transformX(entry.getValue().x()), transformY(entry.getValue().y()))
+        );
     }
 
 
