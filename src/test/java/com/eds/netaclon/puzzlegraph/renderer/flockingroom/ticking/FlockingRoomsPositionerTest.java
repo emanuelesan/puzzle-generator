@@ -7,9 +7,6 @@ import org.junit.Test;
 
 import java.util.Random;
 
-/**
- * Created by emanuelesan on 06/08/16.
- */
 public class FlockingRoomsPositionerTest {
 
 
@@ -17,19 +14,20 @@ public class FlockingRoomsPositionerTest {
     public void testAlotOfCombinations() throws Exception {
         int count = 0;
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             Random rand = new Random(i);
 
-            GraphicPuzzle gp = new GraphicPuzzle(PuzzleCreator.createPuzzleGraph(rand, 20));
+            GraphicPuzzle gp = new GraphicPuzzle(PuzzleCreator.createPuzzleGraph(rand, 20), i);
             TickWiseOperator flockingRoomsPositioner = new FlockingRoomsPositioner(gp);
-            GraphicPuzzleProcessor graphicPuzzleProcessor = new GraphicPuzzleProcessor(gp, new InitialPositioner(gp), flockingRoomsPositioner);
+            GraphicPuzzleProcessor graphicPuzzleProcessor = new GraphicPuzzleProcessor(gp, new RecursivePositioner(gp));
             graphicPuzzleProcessor.execute();
 
-            if (!flockingRoomsPositioner.isPuzzleStillValid())
+            if (!DoorCreator.canApply(gp)) {
+                System.out.println("!!! " + i);
                 count++;
-
+            }
         }
-        System.out.println("\n\ncount : " + count);
+        System.out.println("\n\nnot valid : " + count);
     }
 
 }

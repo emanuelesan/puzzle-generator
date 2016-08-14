@@ -156,7 +156,7 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
     private void centerCamera() {
         Rectangle center = determineView();
 
-        view.push(new Vector2(center.x(), center.y()).minus(new Vector2(view.x(), view.y())).times(.1));
+        view.push(new Vector2(center.x(), center.y()).minus(new Vector2(view.x(), view.y())).times(.1f));
         view.move();
         float widthRatio = (center.width() + 4) / view.width();
         float heightRation = (center.height() + 4) / view.height();

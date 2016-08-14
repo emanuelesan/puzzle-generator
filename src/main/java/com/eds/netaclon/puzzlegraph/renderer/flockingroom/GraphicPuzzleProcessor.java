@@ -10,9 +10,10 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class GraphicPuzzleProcessor {
-    private static final Logger logger = Logger.getLogger("logger");
+    static final Logger logger = Logger.getLogger("logger");
     protected final Puzzle puz;
-    private final Queue<TickWiseOperator> operators;
+    final Queue<TickWiseOperator> operators;
+    private boolean correct = true;
 
 
     public GraphicPuzzleProcessor(GraphicPuzzle gp, TickWiseOperator... operators) {
@@ -22,10 +23,11 @@ public class GraphicPuzzleProcessor {
 
     }
 
-    public void execute() {
+    public boolean execute() {
         while(!processingStep()) {
         }
-        logger.info("finished!!");
+        logger.finer("finished!!");
+        return correct;
 
     }
 
@@ -34,11 +36,14 @@ public class GraphicPuzzleProcessor {
         operators.peek().tick();
         if (operators.peek().isDone()) {
             if (operators.size() > 1) {
-                logger.info("removed operator, welcome new operator! ");
+                logger.finer("removed operator, welcome new operator! ");
                 if (operators.peek().isPuzzleStillValid())
                     operators.poll();
-                else
-                    throw new RuntimeException("puzzle went bad.");
+                else {
+                    correct = false;
+                    return true;
+
+                }
             } else return true;
         }
         return false;

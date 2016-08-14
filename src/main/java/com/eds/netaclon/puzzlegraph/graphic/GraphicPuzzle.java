@@ -11,19 +11,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GraphicPuzzle {
+    private final long seed;
     private Puzzle puzzle;
     private Map<String, Rectangle> rectsByRoom;
     private Map<String, Rectangle> rectsByItems;
     private Map<String, Rectangle> rectsByDoor;
 
-    public GraphicPuzzle() {
-    }
 
-    public GraphicPuzzle(Puzzle puz) {
-        this();
+    public GraphicPuzzle(Puzzle puz, long seed) {
         this.puzzle = puz;
         rectsByRoom = new HashMap<>();
         rectsByDoor = new HashMap<>();
+        this.seed = seed;
 
     }
 
@@ -53,8 +52,8 @@ public class GraphicPuzzle {
         Rectangle inRect = rectsByRoom.get(door.getInRoom(puzzle).getName());
         Rectangle outRect = rectsByRoom.get(door.getOutRoom(puzzle).getName());
         Vector2 roomDims = new Vector2(
-                (inRect.width() + outRect.width()) / 2D,
-                (inRect.height() + outRect.height()) / 2D);
+                (inRect.width() + outRect.width()) / 2f,
+                (inRect.height() + outRect.height()) / 2f);
         Vector2 distance =
                 new Vector2(
                         Math.abs(inRect.x() - outRect.x()),
@@ -102,6 +101,11 @@ public class GraphicPuzzle {
     public Map<String, Rectangle> getRectsByDoor() {
         return rectsByDoor;
     }
+
+    public long getSeed() {
+        return seed;
+    }
+
 
     public enum Direction {
         HORIZONTAL, VERTICAL

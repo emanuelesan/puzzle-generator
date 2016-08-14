@@ -8,7 +8,6 @@ import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Vector2;
 
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -16,27 +15,26 @@ import java.util.stream.Collectors;
  * rooms are close enough to draw a door betwen each of them.
  */
 public class FlockingRoomsPositioner implements TickWiseOperator {
-    private static final Logger logger = Logger.getLogger("logger");
-    private static final double ALPHA = .1;
-    private static final int EXTRA_STEPS = 100;// 15 * 60;
+    private static final float ALPHA = .1f;
+    private static final int EXTRA_STEPS = 1000;// 15 * 60;
     private final Puzzle puz;
     private final GraphicPuzzle gp;
     private int step = 0;
     private Map<String, Rectangle> rectsByRoom;
     private int maxIterations;
-    private double startPushClose;
-    private double startPull;
-    private double endPushClose;
-    private double endPull;
+    private float startPushClose;
+    private float startPull;
+    private float endPushClose;
+    private float endPull;
 
     public FlockingRoomsPositioner(GraphicPuzzle gp) {
         this.puz = gp.getPuzzle();
         this.gp = gp;
         rectsByRoom = gp.getRectsByRoom();
-        startPushClose = .551;
+        startPushClose = .551f;
         startPull = 1;
         endPushClose = 0;
-        endPull = .3;
+        endPull = .3f;
         maxIterations = 2000 * 6 * (int) (Math.floor(rectsByRoom.size()) + 1);
     }
 
@@ -62,9 +60,9 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
 
     @Override
     public void tick() {
-        double pushCloseFactor = Math.max(startPushClose + (endPushClose - startPushClose) * ((double) step / maxIterations), 0);
-        double pullFactor = Math.max(startPull + (endPull - startPull) * ((double) step / maxIterations), 0);
-        double snapFactor = step > maxIterations ? 1 : Math.max(0, (double) (step - maxIterations) / maxIterations);
+        float pushCloseFactor = Math.max(startPushClose + (endPushClose - startPushClose) * ((float) step / maxIterations), 0);
+        float pullFactor = Math.max(startPull + (endPull - startPull) * ((float) step / maxIterations), 0);
+        float snapFactor = step > maxIterations ? 1 : Math.max(0, (float) (step - maxIterations) / maxIterations);
         balanceDistances(pushCloseFactor, pullFactor, snapFactor);
         step++;
     }
@@ -75,29 +73,10 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
 
     @Override
     public boolean isPuzzleStillValid() {
-        return puz.getDoorMap().values().stream().map(door ->
-                {
-                    Rectangle r1 = rectsByRoom.get(door.getInRoomName());
-                    Rectangle r2 = rectsByRoom.get(door.getOutRoomName());
-                    Rectangle intersection = r1.intersection(r2);
-                    if
-                            (
-                            (Float.compare(Math.round(intersection.height()), 0) == 0 && Math.round(intersection.width()) >= 1)
-                                    ||
-                                    (Float.compare(Math.round(intersection.width()), 0) == 0 && Math.round(intersection.height()) >= 1)
-                            ) {
-                        return true;
-                    } else {
-                        logger.info(() ->
-                                "width: " + intersection.width() + ", height: " + intersection.height() +
-                                        " between " + door.getInRoomName() + " and " + door.getOutRoomName());
-                        return false;
-                    }
-                }
-        ).reduce(Boolean::logicalAnd).orElse(true);
+        return DoorCreator.canApply(gp);
     }
 
-    private void balanceDistances(double pushCloseFactor, double pullFactor, double snapFactor) {
+    private void balanceDistances(float pushCloseFactor, float pullFactor, float snapFactor) {
 
         rectsByRoom.entrySet()
                 .stream()
@@ -121,13 +100,13 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
     }
 
 
-    private void snapToGrid(Rectangle rec, double snapFactor) {
+    private void snapToGrid(Rectangle rec, float snapFactor) {
         Vector2 push = new Vector2(-rec.x() + Math.round(rec.x()),
                 -rec.y() + Math.round(rec.y()));
         rec.push(push.times(snapFactor));
     }
 
-    private Vector2 pull(Rectangle rec, double fact) {
+    private Vector2 pull(Rectangle rec, float fact) {
         return rectsByRoom.values().stream()
                 .map(rec1 -> rec.minusPos(rec1)
                         .times(ALPHA * fact * rec1.intersectionArea(rec)))
@@ -135,7 +114,7 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
                 .orElse(Vector2.ZERO);
     }
 
-    private Vector2 pushDoorsClose(Rectangle rec, Room room, double factor) {
+    private Vector2 pushDoorsClose(Rectangle rec, Room room, float factor) {
         return puz.getDoors(room)
                 .stream()
                 .map(door -> door.getInRoomName().equals(room.getName()) ? door.getOutRoomName() : door.getInRoomName())
@@ -143,8 +122,8 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
                 .map(rec1 -> {
                     //push torwards rec1 above,below,left or right
                     Vector2 roomDims = new Vector2(
-                            (rec.width() + rec1.width()) / 2D,
-                            (rec.height() + rec1.height()) / 2D);
+                            (rec.width() + rec1.width()) / 2f,
+                            (rec.height() + rec1.height()) / 2f);
                     Vector2 direction = rec1.minusPos(rec);
                     Vector2 targetPosition = roomDims.point(new Vector2(Math.signum(direction.x),
                             Math.signum(direction.y)))

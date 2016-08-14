@@ -73,4 +73,7 @@ public class Door implements Lockable{
 	}
 
 
+	public Room getOtherRoom(Room start, Puzzle puz) {
+		return puz.getRoom(start.getName().equals(inRoomName) ? outRoomName : inRoomName);
+	}
 }

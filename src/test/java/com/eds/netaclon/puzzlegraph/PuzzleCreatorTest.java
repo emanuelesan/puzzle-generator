@@ -1,9 +1,12 @@
 package com.eds.netaclon.puzzlegraph;
 
+import com.eds.netaclon.puzzlegraph.graphic.GraphicPuzzle;
 import javaslang.Tuple2;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,6 +15,17 @@ import java.util.logging.Logger;
  * Created by emanuelesan on 31/07/16.
  */
 public class PuzzleCreatorTest {
+    @Test
+    public void testMainCall() throws Exception {
+        Instant start = Instant.now();
+        for (int i = 0; i < 3000; i++) {
+            GraphicPuzzle puzzle = PuzzleCreator.createPuzzle(20);
+            //  System.out.println(puzzle.getSeed());
+        }
+        Duration between = Duration.between(start, Instant.now());
+        System.out.println("\n\ntotal time: " + between);
+    }
+
     private static final Logger logger = Logger.getLogger(Puzzle.class.getName());
 
     @Test

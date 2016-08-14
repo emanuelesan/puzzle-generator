@@ -9,7 +9,8 @@ import java.io.Serializable;
  * aaah the rectangle class, an evergreen.
  */
 public class Rectangle implements Serializable {
-    private float x, y, xMin, yMin, xMax, yMax;
+    private float x, y;
+    private float xMin, yMin, xMax, yMax;
 
     private float xVel;
     private float yVel;
@@ -172,17 +173,7 @@ public class Rectangle implements Serializable {
 
     }
 
-    public void roundCoords() {
-        xMin = Math.round(xMin);
-        xMax = Math.round(xMax);
 
-        yMin = Math.round(yMin);
-        yMax = Math.round(yMax);
-
-        x = Math.round(x);
-        y = Math.round(y);
-
-    }
 
     public static Rectangle fromCenter(float xCenter, float yCenter, float width, float height) {
         return new Rectangle(xCenter - width / 2f, yCenter - height / 2f,

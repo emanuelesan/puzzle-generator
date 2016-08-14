@@ -7,7 +7,9 @@ import com.eds.netaclon.puzzlegraph.plotseed.impl.LockedContainerPlot;
 import com.eds.netaclon.puzzlegraph.plotseed.impl.LockedDoorPlot;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.FlockingRoomsRenderer;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.GraphicPuzzleProcessor;
-import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.*;
+import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.DoorCreator;
+import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.RecursivePositioner;
+import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperator;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,7 +29,7 @@ public class PuzzleCreator {
         this.rand = rand;
     }
 
-    private Puzzle createPuzzle(int steps) {
+    private Puzzle process(int steps) {
         Puzzle puz = new Puzzle();
         for (int step = 0; step < steps; step++) {
 
@@ -41,16 +43,17 @@ public class PuzzleCreator {
 
     public static void main(String[] args) {
 
-        Random rand = new Random(31);//31
+        Random rand = new Random(26);//31
 
-        Puzzle puz = createPuzzleGraph(rand, 50);
-        logger.info(puz.printInfo());
-        GraphicPuzzle graphicPuzzle = new GraphicPuzzle(puz);
+        Puzzle puz = createPuzzleGraph(rand, 25);
+        logger.finer(puz.printInfo());
+        GraphicPuzzle graphicPuzzle = new GraphicPuzzle(puz, 26);
 
         TickWiseOperator[] operators = new TickWiseOperator[]{
-                new InitialPositioner(graphicPuzzle)
-                , new FlockingRoomsPositioner(graphicPuzzle)
-                , new Clamper(graphicPuzzle)
+                new RecursivePositioner(graphicPuzzle)
+
+                //   , new FlockingRoomsPositioner(graphicPuzzle)
+                //    , new Clamper(graphicPuzzle)
                 , new DoorCreator(graphicPuzzle)
         };
 
@@ -59,28 +62,29 @@ public class PuzzleCreator {
     }
 
     /**
-     * tries 2 times to create a graphical puzzle. if not, it will throw an happy wtf exception.
+     * tries n times to create a graphical puzzle. if not, it will throw an happy wtf exception.
      */
-    public static GraphicPuzzle createPuzzle(int seed, int complexity) {
-        Random rand = new Random(seed);
+    public static GraphicPuzzle createPuzzle(int complexity) {
+        do {
+            long seed = (long) (Math.random() * 1000000);
+            Random rand = new Random(seed);
 
-        Puzzle puz = createPuzzleGraph(rand, complexity);
-        logger.info(puz.printInfo());
-        GraphicPuzzle graphicPuzzle = new GraphicPuzzle(puz);
-        TickWiseOperator[] operators = new TickWiseOperator[]{
-                new InitialPositioner(graphicPuzzle)
-                , new FlockingRoomsPositioner(graphicPuzzle)
-                , new Clamper(graphicPuzzle)
-                , new DoorCreator(graphicPuzzle)
+            Puzzle puz = createPuzzleGraph(rand, complexity);
+            logger.finer(puz.printInfo());
+            GraphicPuzzle graphicPuzzle = new GraphicPuzzle(puz, seed);
+            TickWiseOperator[] operators = new TickWiseOperator[]{
+                    //new InitialPositioner(graphicPuzzle)
+                    new RecursivePositioner(graphicPuzzle)
+                    //  , new FlockingRoomsPositioner(graphicPuzzle)
+                    //  , new Clamper(graphicPuzzle)
+                    , new DoorCreator(graphicPuzzle)
 
-        };
-        GraphicPuzzleProcessor graphicPuzzleProcessor = new GraphicPuzzleProcessor(graphicPuzzle, operators);
+            };
+            GraphicPuzzleProcessor graphicPuzzleProcessor = new GraphicPuzzleProcessor(graphicPuzzle, operators);
 
-        graphicPuzzleProcessor.execute();
-
-        return graphicPuzzle;
-
-
+            if (graphicPuzzleProcessor.execute())
+                return graphicPuzzle;
+        } while (true);
     }
 
     private static void graphicProcessing(GraphicPuzzle gp, TickWiseOperator... operators) {
@@ -96,7 +100,7 @@ public class PuzzleCreator {
         seedBag.add(new LockedDoorPlot());
         seedBag.add(new LockedContainerPlot());
         PuzzleCreator creator = new PuzzleCreator(seedBag, rand);
-        return creator.createPuzzle(steps);
+        return creator.process(steps);
     }
 
 }
