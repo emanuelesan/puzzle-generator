@@ -1,7 +1,7 @@
 package com.eds.netaclon.puzzlegraph.renderer.flockingroom;
 
 /**
- * Created by emanuelesan on 31/03/16.
+ * immutable vector class.
  */
 public class Vector2 {
 
@@ -46,17 +46,12 @@ public class Vector2 {
         return plus(-x,-y);
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Vector2 vector2 = (Vector2) o;
-
-        if (Float.compare(vector2.x, x) != 0) return false;
-        return Float.compare(vector2.y, y) == 0;
-
+        return Float.compare(vector2.x, x) == 0 && Float.compare(vector2.y, y) == 0;
     }
 
     @Override
@@ -64,5 +59,9 @@ public class Vector2 {
         int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
         result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
         return result;
+    }
+
+    public float l1() {
+        return x + y;
     }
 }

@@ -8,11 +8,16 @@ import com.eds.netaclon.puzzlegraph.renderer.flockingroom.math.Partition;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.math.PartitionCollection;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
- * Created by emanuelesan on 07/08/16.
+ * every cycle takes O(n*k) time, where k is the number of possible positions for each room (8*6)
+ * each cycle can call k * n subcycles, making it a bruteforce on a problem with an exponentially increasing
+ * solution domain ((k*n) to the nth power).
+ *
+ * below 20, this gives good results in good time..
  */
 public class RecursivePositioner implements TickWiseOperator {
     private static final Logger logger = Logger.getLogger("logger");
@@ -25,6 +30,7 @@ public class RecursivePositioner implements TickWiseOperator {
     private GraphicPuzzle graphicPuzzle;
     boolean done = false;
     private boolean valid = true;
+    private AtomicInteger stepCounter = new AtomicInteger(0);
 
     public RecursivePositioner(GraphicPuzzle graphicPuzzle) {
         this.graphicPuzzle = graphicPuzzle;
@@ -46,6 +52,7 @@ public class RecursivePositioner implements TickWiseOperator {
         graphicPuzzle.getRectsByRoom().putAll(roomShapeByName);
         valid = graphicPuzzle.getRectsByRoom().values().size() == puzzle.allRooms().size();
 //        logger.info("valid? " + valid);
+        logger.info("steps : " + stepCounter.get());
         done = true;
     }
 
@@ -53,6 +60,7 @@ public class RecursivePositioner implements TickWiseOperator {
      * add room to map, if possible. otherwise return false;
      */
     private boolean build(Map<String, Rectangle> roomShapeByName, Map<String, PartitionCollection> freedoms, Room r) {
+        stepCounter.incrementAndGet();
         List<String> otherRooms = graphicPuzzle
                 .getPuzzle()
                 .getDoors(r)
@@ -77,8 +85,9 @@ public class RecursivePositioner implements TickWiseOperator {
             possibleRects = intersection.partitions().stream()
                     .map(part -> excluderooms(part, roomShapeByName))
                     .filter(part -> !part.isDegenerate())
-                    .map(sp -> sp.complete(generateX(), generateY()))
+                    .flatMap(sp -> sp.complete(generateX(), generateY()))
                     .filter(RecursivePositioner::isWideAndHighEnough)
+                    .sorted((r1, r2) -> random.nextInt(2) - 1)
                     .collect(Collectors.toList());
         }
 
@@ -124,25 +133,39 @@ public class RecursivePositioner implements TickWiseOperator {
 
     }
 
-    private boolean overlapsRooms(Rectangle rect, Map<String, Rectangle> roomShapeByName) {
-        return roomShapeByName.values().stream().map(rect::intersectionArea).filter(area -> area >= 1).count() > 0;
-    }
-
+    /**
+     * O(n) complexity
+     */
     private Partition excluderooms(Partition part, Map<String, Rectangle> roomShapeByName) {
         Partition part1 = part;
         for (Rectangle rect : roomShapeByName.values()) {
             part1 = part1.exclude(rect);
+            if (part.isDegenerate()) return part;
         }
         return part1;
     }
 
 
+    /**
+     * for each side of the rectangle, create a space partition which a little larger than the given side.
+     * this allows potentially to place two rooms on the same side.
+     */
     private PartitionCollection partitionCollectionFrom(Rectangle rect) {
-        Partition bottom = new Partition(rect.xMin(), Float.NaN, rect.xMax(), rect.yMin());
-        Partition top = new Partition(rect.xMin(), rect.yMax(), rect.xMax(), Float.NaN);
+        //extra space causes narrower space to place a door, leading to positioning doors to angles.
+        // this is empirically the best fit for the value.
+        float halfWidth = (float) Math.floor(minX / 3);
+        float halfHeight = (float) Math.floor(minY / 3);
 
-        Partition right = new Partition(rect.xMax(), rect.yMin(), Float.NaN, rect.yMax());
-        Partition left = new Partition(Float.NaN, rect.yMin(), rect.xMin(), rect.yMax());
+        float minXBound = rect.xMin() - halfWidth;
+        float maxXBound = rect.xMax() + halfWidth;
+        float minYBound = rect.yMin() - halfHeight;
+        float maxYBound = rect.yMax() + halfHeight;
+
+        Partition bottom = new Partition(minXBound, Float.NaN, maxXBound, rect.yMin());
+        Partition top = new Partition(minXBound, rect.yMax(), maxXBound, Float.NaN);
+
+        Partition right = new Partition(rect.xMax(), minYBound, Float.NaN, maxYBound);
+        Partition left = new Partition(Float.NaN, minYBound, rect.xMin(), maxYBound);
 
         return new PartitionCollection(Arrays.asList(bottom, top, right, left));
 

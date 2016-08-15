@@ -45,7 +45,7 @@ public class PuzzleCreator {
 
         Random rand = new Random(26);//31
 
-        Puzzle puz = createPuzzleGraph(rand, 25);
+        Puzzle puz = createPuzzleGraph(rand, 20);
         logger.finer(puz.printInfo());
         GraphicPuzzle graphicPuzzle = new GraphicPuzzle(puz, 26);
 

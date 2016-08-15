@@ -163,7 +163,6 @@ public class Rectangle implements Serializable {
 
     }
 
-
     public void scale(float xRatio, float yRatio) {
         xMin = x - (x - xMin) * xRatio;
         xMax = x + (xMax - x) * xRatio;
@@ -174,10 +173,32 @@ public class Rectangle implements Serializable {
     }
 
 
-
     public static Rectangle fromCenter(float xCenter, float yCenter, float width, float height) {
         return new Rectangle(xCenter - width / 2f, yCenter - height / 2f,
                 xCenter + width / 2f, yCenter + height / 2f
         );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Rectangle rectangle = (Rectangle) o;
+
+        if (Float.compare(rectangle.xMin, xMin) != 0) return false;
+        if (Float.compare(rectangle.yMin, yMin) != 0) return false;
+        if (Float.compare(rectangle.xMax, xMax) != 0) return false;
+        return Float.compare(rectangle.yMax, yMax) == 0;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (xMin != +0.0f ? Float.floatToIntBits(xMin) : 0);
+        result = 31 * result + (yMin != +0.0f ? Float.floatToIntBits(yMin) : 0);
+        result = 31 * result + (xMax != +0.0f ? Float.floatToIntBits(xMax) : 0);
+        result = 31 * result + (yMax != +0.0f ? Float.floatToIntBits(yMax) : 0);
+        return result;
     }
 }

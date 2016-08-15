@@ -5,9 +5,6 @@ import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-/**
- * Created by emanuelesan on 07/08/16.
- */
 public class PartitionCollection {
     private static final Logger logger = Logger.getLogger("logger");
 
@@ -16,7 +13,6 @@ public class PartitionCollection {
     public PartitionCollection(List<Partition> partitions) {
         this.partitions = partitions;
     }
-
 
     /**
      * returns a new PArtitionCollection having each partition as
@@ -29,12 +25,9 @@ public class PartitionCollection {
                                 .parallelStream()
                                 .map(partition::intersect)
                                 .reduce(Partition::nonDegenerate)
-
         ).filter(Optional::isPresent).map(Optional::get)
-
                 .collect(Collectors.toList());
         return new PartitionCollection(intersected);
-
     }
 
     @Override
@@ -42,10 +35,6 @@ public class PartitionCollection {
         return "PartitionCollection{" +
                 "partitions=" + partitions +
                 '}';
-    }
-
-    public Partition get(int i) {
-        return partitions.get(i);
     }
 
     public List<Partition> partitions() {

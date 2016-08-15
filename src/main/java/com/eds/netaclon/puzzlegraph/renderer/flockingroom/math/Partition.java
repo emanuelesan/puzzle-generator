@@ -3,11 +3,11 @@ package com.eds.netaclon.puzzlegraph.renderer.flockingroom.math;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Rectangle;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Vector2;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Stream;
 
-/**
- * Created by emanuelesan on 14/08/16.
- */
 public class Partition {
 
 
@@ -47,10 +47,7 @@ public class Partition {
             maxK = new Vector2(xMax, yMax);
             verse = Verse.NEGATIVE;
             direction = Vector2.Y;
-
         }
-
-
     }
 
     public Partition(Vector2 minK, Vector2 maxK, Verse verse, float extension, Vector2 direction) {
@@ -60,7 +57,6 @@ public class Partition {
         this.verse = verse;
         this.extension = extension;
         this.direction = direction;
-
     }
 
     private static void checkArguments(Vector2 minK, Vector2 maxK, float extension, Vector2 direction) {
@@ -72,8 +68,6 @@ public class Partition {
         if (extension < 0
                 )
             throw new RuntimeException(String.format(Locale.ENGLISH, "extension cannot be negative! %f", extension));
-
-
     }
 
     private static void checkArguments(float xMin, float yMin, float xMax, float yMax) {
@@ -84,7 +78,6 @@ public class Partition {
         if (Float.isNaN(yMin)) nans++;
         if (nans != 1)
             throw new RuntimeException(String.format(Locale.ENGLISH, "exactly 1 NaN value allowed! %f,%f,%f,%f", xMin, yMin, xMax, yMax));
-
     }
 
     /**
@@ -115,10 +108,14 @@ public class Partition {
     }
 
     public boolean isDegenerate() {
-        return extension <= 0;
+        return extension <= 0 || maxK.minus(minK).l1() <= 0;
     }
 
-    public Rectangle complete(int width, float height) {
+    /**
+     * @return some rectangles contained in the partition,
+     * each having an edge lying the minK-maxK segment.
+     */
+    public Stream<Rectangle> complete(int width, float height) {
         float realWidth = Math.min(extension, width);
         float realHeight = Math.min(extension, height);
         float minX = minK.x,
@@ -126,11 +123,15 @@ public class Partition {
                 maxX = maxK.x,
                 maxY = maxK.y;
 
+        List<Rectangle> rectangles = new ArrayList<>();
         if (direction.equals(Vector2.X)) {
             if (this.verse == Verse.POSITIVE) {
                 maxX = minK.x + realWidth;
             } else {
                 minX = maxK.x - realWidth;
+            }
+            for (float j = minK.y; j <= maxY - height; j += 1) {
+                rectangles.add(new Rectangle(minX, j, maxX, Math.min(maxY, j + height)));
             }
         } else {
             if (this.verse == Verse.POSITIVE) {
@@ -139,9 +140,11 @@ public class Partition {
             } else {
                 minY = maxK.y - realHeight;
             }
+            for (float j = minK.x; j <= maxX - width; j += 1) {
+                rectangles.add(new Rectangle(j, minY, Math.min(maxX, j + width), maxY));
+            }
         }
-
-        return new Rectangle(minX, minY, maxX, maxY);
+        return rectangles.stream().distinct();
     }
 
     /**
@@ -184,12 +187,15 @@ public class Partition {
 
     /**
      * @return a smaller partition only if intersection has a non 0 area.
-     * the partition has the same attributes of the current, but a lower extension.
+     * the partition has the same attributes of the current,
+     * but a lower extension or lower maxK-minK distance.
      */
     public Partition exclude(Rectangle rect) {
         if (this.toRectangle().intersects(rect)) {
             Rectangle intersection = this.toRectangle().intersection(rect);
             if (intersection.area() > 0) {
+                Vector2 newMinK = minK;
+                Vector2 newMaxK = maxK;
                 float newExtension;
                 if (direction.equals(Vector2.X)) {
                     if (this.verse == Verse.POSITIVE) {
@@ -197,12 +203,30 @@ public class Partition {
                     } else {
                         newExtension = Math.max(0, maxK.x - rect.xMax());
                     }
+                    //both of the following can apply.
+                    if (maxK.y > intersection.yMax()) newMinK = new Vector2(minK.x, intersection.yMax());
+                    if (minK.y < intersection.yMin()) newMaxK = new Vector2(minK.x, intersection.yMin());
                 } else {
                     if (this.verse == Verse.POSITIVE) {
                         newExtension = Math.max(0, rect.yMin() - minK.y);
                     } else {
                         newExtension = Math.max(0, maxK.y - rect.yMax());
                     }
+                    //both of the following can apply.
+                    if (maxK.x > intersection.xMax()) newMinK = new Vector2(intersection.xMax(), minK.y);
+                    if (minK.x < intersection.xMin()) newMaxK = new Vector2(intersection.xMin(), minK.y);
+                }
+                if (newExtension <= 0 && (maxK.minus(newMaxK).l1() > 1 || newMinK.minus(minK).l1() > 1)) {
+                    if (newMaxK.minus(newMinK).l1() < 0) {
+                        if (newMaxK.minus(minK).l1() > maxK.minus(newMinK).l1()) {
+                            return new Partition(minK, newMaxK, this.verse, extension, this.direction);
+                        } else {
+                            return new Partition(newMinK, maxK, this.verse, extension, this.direction);
+                        }
+                    }
+
+                    return new Partition(newMinK, newMaxK, this.verse, extension, this.direction);
+
                 }
                 return new Partition(this.minK, this.maxK, this.verse, newExtension, this.direction);
             }
