@@ -17,13 +17,15 @@ import java.util.stream.Collectors;
  * each cycle can call k * n subcycles, making it a bruteforce on a problem with an exponentially increasing
  * solution domain ((k*n) to the nth power).
  *
- * below 20, this gives good results in good time..
+ * at 20, this gives good results in good time (2 failures every 10000 seeds, in 90 seconds on my machine).
+ *
+ *
  */
 public class RecursivePositioner implements TickWiseOperator {
     private static final Logger logger = Logger.getLogger("logger");
 
-    private static final int maxX = 8, maxY = 6;
-    private static final int minX = 6, minY = 4;
+    private static final int maxX = 16, maxY = 12;
+    private static final int minX = 12, minY = 8;
     private final Random random;
     private final Set<String> allRoomNames;
 
@@ -52,7 +54,7 @@ public class RecursivePositioner implements TickWiseOperator {
         graphicPuzzle.getRectsByRoom().putAll(roomShapeByName);
         valid = graphicPuzzle.getRectsByRoom().values().size() == puzzle.allRooms().size();
 //        logger.info("valid? " + valid);
-        logger.info("steps : " + stepCounter.get());
+//        logger.info("steps : " + stepCounter.get());
         done = true;
     }
 
