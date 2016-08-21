@@ -68,6 +68,11 @@ public class DoorCreator implements TickWiseOperator {
         return true;
     }
 
+    @Override
+    public long steps() {
+        return 1L;
+    }
+
     public static boolean canApply(GraphicPuzzle puzzle) {
         return puzzle.getPuzzle().getDoorMap().values().stream().map(door ->
                 {

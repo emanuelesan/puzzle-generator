@@ -8,7 +8,6 @@ import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperat
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.Map;
 
 
@@ -51,9 +50,10 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
                     updateImage(imageShow);
                     lastRender = System.currentTimeMillis();
                 }
+//                Thread.sleep(16);
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("colors");
         }
 
@@ -167,6 +167,7 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
     private void drawDoor(Graphics2D g, Door door) {
         Rectangle rec1 = rectsByRoom.get(door.getInRoomName());
         Rectangle rec2 = rectsByRoom.get(door.getOutRoomName());
+        if (rec1 != null && rec2 != null)
         g.drawLine(rnd(transformX(rec1.x()))
                 , rnd(transformY(rec1.y()))
                 , rnd(transformX(rec2.x()))

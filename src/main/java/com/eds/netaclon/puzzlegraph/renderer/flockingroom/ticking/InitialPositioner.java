@@ -83,4 +83,9 @@ public class InitialPositioner implements TickWiseOperator {
     public boolean isPuzzleStillValid() {
         return true;
     }
+
+    @Override
+    public long steps() {
+        return 0L;
+    }
 }

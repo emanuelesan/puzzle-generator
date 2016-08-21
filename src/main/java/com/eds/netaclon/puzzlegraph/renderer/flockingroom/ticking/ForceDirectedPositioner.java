@@ -23,4 +23,10 @@ public class ForceDirectedPositioner implements TickWiseOperator {
     public boolean isPuzzleStillValid() {
         return false;
     }
+
+
+    @Override
+    public long steps() {
+        return 0L;
+    }
 }

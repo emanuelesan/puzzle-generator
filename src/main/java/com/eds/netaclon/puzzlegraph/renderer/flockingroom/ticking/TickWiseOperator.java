@@ -17,4 +17,9 @@ public interface TickWiseOperator {
 
     boolean isPuzzleStillValid();
 
+    long steps();
+
+    default long averageSteps() {
+        return 10;
+    }
 }

@@ -38,4 +38,9 @@ public class Clamper implements TickWiseOperator {
     public boolean isPuzzleStillValid() {
         return true;
     }
+
+    @Override
+    public long steps() {
+        return 0L;
+    }
 }

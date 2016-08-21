@@ -6,6 +6,7 @@ import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperat
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -13,14 +14,20 @@ public class GraphicPuzzleProcessor {
     static final Logger logger = Logger.getLogger("logger");
     protected final Puzzle puz;
     final Queue<TickWiseOperator> operators;
+    private final Function<TickWiseOperator, Boolean> terminationFunction;
     private boolean correct = true;
 
 
     public GraphicPuzzleProcessor(GraphicPuzzle gp, TickWiseOperator... operators) {
+        this(gp, operators, (i) -> false);
+
+    }
+
+    public GraphicPuzzleProcessor(GraphicPuzzle gp, TickWiseOperator[] operators, Function<TickWiseOperator, Boolean> terminate) {
         this.puz = gp.getPuzzle();
         this.operators = new LinkedList<>();
         Stream.of(operators).forEachOrdered(this.operators::add);
-
+        terminationFunction = terminate;
     }
 
     public boolean execute() {
@@ -33,11 +40,16 @@ public class GraphicPuzzleProcessor {
 
 
      boolean processingStep() {
-        operators.peek().tick();
-        if (operators.peek().isDone()) {
+         TickWiseOperator currentOperator = operators.peek();
+         currentOperator.tick();
+         if (terminationFunction.apply(currentOperator)) {
+             correct = false;
+             return true;
+         }
+         if (currentOperator.isDone()) {
             if (operators.size() > 1) {
                 logger.finer("removed operator, welcome new operator! ");
-                if (operators.peek().isPuzzleStillValid())
+                if (currentOperator.isPuzzleStillValid())
                     operators.poll();
                 else {
                     correct = false;

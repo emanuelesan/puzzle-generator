@@ -134,4 +134,10 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
                 .reduce(Vector2::plus)
                 .orElse(Vector2.ZERO);
     }
+
+
+    @Override
+    public long steps() {
+        return 0L;
+    }
 }

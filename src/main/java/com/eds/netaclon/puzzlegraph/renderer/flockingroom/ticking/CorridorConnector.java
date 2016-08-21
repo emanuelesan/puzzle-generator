@@ -5,16 +5,12 @@ import com.eds.netaclon.puzzlegraph.Room;
 import com.eds.netaclon.puzzlegraph.graphic.GraphicPuzzle;
 import com.eds.netaclon.puzzlegraph.item.Door;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Rectangle;
-import com.eds.netaclon.puzzlegraph.renderer.flockingroom.Vector2;
 import javaslang.Tuple2;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * creates corridors, which are new rooms actually, added to the puzzle,
@@ -74,6 +70,11 @@ public class CorridorConnector implements TickWiseOperator {
         return !(gp.calculateOverlappingRectangles().size()>0);
     }
 
+
+    @Override
+    public long steps() {
+        return 0L;
+    }
     private List<Tuple2<Door, GraphicPuzzle.Direction>> computeCorridors() {
         return puz.getDoorMap()
                 .values()
