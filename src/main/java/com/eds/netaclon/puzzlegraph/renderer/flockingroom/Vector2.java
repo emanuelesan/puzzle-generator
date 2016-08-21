@@ -9,21 +9,22 @@ public class Vector2 {
     public static final Vector2 X = new Vector2(1, 0);
     public static final Vector2 Y = new Vector2(0, 1);
 
-    public final float x, y;
+    public final int x, y;
 
-    public Vector2(float x, float y) {
+    public Vector2(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-//    public float magnitude()
+
+//    public int magnitude()
 //    {
 //        return Math.sqrt(x*x+y*y);
 //    }
 
     public Vector2 times(float times)
     {
-        return new Vector2(x*times,y*times);
+        return new Vector2((int) (x * times), (int) (y * times));
     }
 
     public Vector2 point(Vector2 vector2) {
@@ -38,11 +39,11 @@ public class Vector2 {
         return plus(vector2.x,vector2.y);
     }
 
-    public Vector2 plus(float x, float y) {
+    public Vector2 plus(int x, int y) {
         return new Vector2(this.x+x,this.y+y);
     }
 
-    public Vector2 minus(float x, float y) {
+    public Vector2 minus(int x, int y) {
         return plus(-x,-y);
     }
 
@@ -56,12 +57,12 @@ public class Vector2 {
 
     @Override
     public int hashCode() {
-        int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
-        result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+        int result = x;
+        result = 31 * result + y;
         return result;
     }
 
-    public float l1() {
+    public int l1() {
         return x + y;
     }
 }

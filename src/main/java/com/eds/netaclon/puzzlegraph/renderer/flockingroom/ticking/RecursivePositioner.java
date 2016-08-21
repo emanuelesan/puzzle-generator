@@ -156,7 +156,7 @@ public class RecursivePositioner implements TickWiseOperator {
                 && rectangle.height() >= minY && rectangle.height() <= maxY;
     }
 
-    private float generateY() {
+    private int generateY() {
         return random.nextInt(maxY - minY) + minY;
     }
 
@@ -185,19 +185,19 @@ public class RecursivePositioner implements TickWiseOperator {
     private PartitionCollection partitionCollectionFrom(Rectangle rect) {
         //extra space causes narrower space to place a door, leading to positioning doors to angles.
         // this is empirically the best fit for the value.
-        float halfWidth = (float) Math.floor(minX / 3);
-        float halfHeight = (float) Math.floor(minY / 3);
+        int halfWidth = (int) Math.floor(minX / 3);
+        int halfHeight = (int) Math.floor(minY / 3);
 
-        float minXBound = rect.xMin() - halfWidth;
-        float maxXBound = rect.xMax() + halfWidth;
-        float minYBound = rect.yMin() - halfHeight;
-        float maxYBound = rect.yMax() + halfHeight;
+        int minXBound = rect.xMin() - halfWidth;
+        int maxXBound = rect.xMax() + halfWidth;
+        int minYBound = rect.yMin() - halfHeight;
+        int maxYBound = rect.yMax() + halfHeight;
 
-        Partition bottom = new Partition(minXBound, Float.NaN, maxXBound, rect.yMin());
-        Partition top = new Partition(minXBound, rect.yMax(), maxXBound, Float.NaN);
+        Partition bottom = new Partition(minXBound, Partition.A_LOT, maxXBound, rect.yMin());
+        Partition top = new Partition(minXBound, rect.yMax(), maxXBound, Partition.A_LOT);
 
-        Partition right = new Partition(rect.xMax(), minYBound, Float.NaN, maxYBound);
-        Partition left = new Partition(Float.NaN, minYBound, rect.xMin(), maxYBound);
+        Partition right = new Partition(rect.xMax(), minYBound, Partition.A_LOT, maxYBound);
+        Partition left = new Partition(Partition.A_LOT, minYBound, rect.xMin(), maxYBound);
 
         return new PartitionCollection(Arrays.asList(bottom, top, right, left));
 

@@ -17,25 +17,25 @@ public class Partition {
     private final Vector2 maxK;
     private final Verse verse;
     private final Vector2 direction;
-    private final float extension;
+    private final int extension;
 
 
-    public Partition(float xMin, float yMin, float xMax, float yMax) {
+    public Partition(int xMin, int yMin, int xMax, int yMax) {
         checkArguments(xMin, yMin, xMax, yMax);
         extension = A_LOT;
-        if (Float.isNaN(xMax)) {
+        if (isALot(xMax)) {
             minK = new Vector2(xMin, yMin);
             maxK = new Vector2(xMin, yMax);
             verse = Verse.POSITIVE;
             direction = Vector2.X;
-        } else if (Float.isNaN(yMax)) {
+        } else if (isALot(yMax)) {
             minK = new Vector2(xMin, yMin);
             maxK = new Vector2(xMax, yMin);
             verse = Verse.POSITIVE;
             direction = Vector2.Y;
 
 
-        } else if (Float.isNaN(xMin)) {
+        } else if (isALot(xMin)) {
             minK = new Vector2(xMax, yMin);
             maxK = new Vector2(xMax, yMax);
             verse = Verse.NEGATIVE;
@@ -50,7 +50,7 @@ public class Partition {
         }
     }
 
-    public Partition(Vector2 minK, Vector2 maxK, Verse verse, float extension, Vector2 direction) {
+    public Partition(Vector2 minK, Vector2 maxK, Verse verse, int extension, Vector2 direction) {
         checkArguments(minK, maxK, extension, direction);
         this.minK = minK;
         this.maxK = maxK;
@@ -59,10 +59,10 @@ public class Partition {
         this.direction = direction;
     }
 
-    private static void checkArguments(Vector2 minK, Vector2 maxK, float extension, Vector2 direction) {
+    private static void checkArguments(Vector2 minK, Vector2 maxK, int extension, Vector2 direction) {
         if (
-                Float.isNaN(minK.x) || Float.isNaN(minK.y) ||
-                        Float.isNaN(maxK.x) || Float.isNaN(maxK.y)
+                isALot(minK.x) || isALot(minK.y) ||
+                        isALot(maxK.x) || isALot(maxK.y)
                 )
             throw new RuntimeException(String.format(Locale.ENGLISH, "no NaN value allowed! %s,%s,%f,%f", minK, maxK));
         if (extension < 0
@@ -70,12 +70,17 @@ public class Partition {
             throw new RuntimeException(String.format(Locale.ENGLISH, "extension cannot be negative! %f", extension));
     }
 
-    private static void checkArguments(float xMin, float yMin, float xMax, float yMax) {
+
+    private static boolean isALot(int y) {
+        return y >= A_LOT;
+    }
+
+    private static void checkArguments(int xMin, int yMin, int xMax, int yMax) {
         int nans = 0;
-        if (Float.isNaN(xMax)) nans++;
-        if (Float.isNaN(yMax)) nans++;
-        if (Float.isNaN(xMin)) nans++;
-        if (Float.isNaN(yMin)) nans++;
+        if (isALot(xMax)) nans++;
+        if (isALot(yMax)) nans++;
+        if (isALot(xMin)) nans++;
+        if (isALot(yMin)) nans++;
         if (nans != 1)
             throw new RuntimeException(String.format(Locale.ENGLISH, "exactly 1 NaN value allowed! %f,%f,%f,%f", xMin, yMin, xMax, yMax));
     }
@@ -92,11 +97,11 @@ public class Partition {
     }
 
     private Rectangle toRectangle() {
-        float xMin = verse == Verse.NEGATIVE && direction.equals(Vector2.X) ? maxK.x - extension : minK.x;
-        float yMin = verse == Verse.NEGATIVE && direction.equals(Vector2.Y) ? maxK.y - extension : minK.y;
+        int xMin = verse == Verse.NEGATIVE && direction.equals(Vector2.X) ? maxK.x - extension : minK.x;
+        int yMin = verse == Verse.NEGATIVE && direction.equals(Vector2.Y) ? maxK.y - extension : minK.y;
 
-        float xMax = verse == Verse.POSITIVE && direction.equals(Vector2.X) ? minK.x + extension : maxK.x;
-        float yMax = verse == Verse.POSITIVE && direction.equals(Vector2.Y) ? minK.y + extension : maxK.y;
+        int xMax = verse == Verse.POSITIVE && direction.equals(Vector2.X) ? minK.x + extension : maxK.x;
+        int yMax = verse == Verse.POSITIVE && direction.equals(Vector2.Y) ? minK.y + extension : maxK.y;
 
         return new Rectangle(xMin, yMin, xMax, yMax);
 
@@ -115,10 +120,10 @@ public class Partition {
      * @return some rectangles contained in the partition,
      * each having an edge lying the minK-maxK segment.
      */
-    public Stream<Rectangle> complete(int width, float height) {
-        float realWidth = Math.min(extension, width);
-        float realHeight = Math.min(extension, height);
-        float minX = minK.x,
+    public Stream<Rectangle> complete(int width, int height) {
+        int realWidth = Math.min(extension, width);
+        int realHeight = Math.min(extension, height);
+        int minX = minK.x,
                 minY = minK.y,
                 maxX = maxK.x,
                 maxY = maxK.y;
@@ -130,7 +135,7 @@ public class Partition {
             } else {
                 minX = maxK.x - realWidth;
             }
-            for (float j = minK.y; j <= maxY - height; j += 1) {
+            for (int j = minK.y; j <= maxY - height; j += 1) {
                 rectangles.add(new Rectangle(minX, j, maxX, Math.min(maxY, j + height)));
             }
         } else {
@@ -140,7 +145,7 @@ public class Partition {
             } else {
                 minY = maxK.y - realHeight;
             }
-            for (float j = minK.x; j <= maxX - width; j += 1) {
+            for (int j = minK.x; j <= maxX - width; j += 1) {
                 rectangles.add(new Rectangle(j, minY, Math.min(maxX, j + width), maxY));
             }
         }
@@ -158,7 +163,7 @@ public class Partition {
         Rectangle intersection = toRectangle().intersection(rect);
 
         Vector2 minK, maxK;
-        float extension;
+        int extension;
         if (direction.equals(Vector2.X)) {
             extension = intersection.width();
             if (this.verse == Verse.POSITIVE) {
@@ -196,7 +201,7 @@ public class Partition {
             if (intersection.area() > 0) {
                 Vector2 newMinK = minK;
                 Vector2 newMaxK = maxK;
-                float newExtension;
+                int newExtension;
                 if (direction.equals(Vector2.X)) {
                     if (this.verse == Verse.POSITIVE) {
                         newExtension = Math.max(0, rect.xMin() - minK.x);
@@ -260,7 +265,7 @@ public class Partition {
         return direction;
     }
 
-    public float getExtension() {
+    public int getExtension() {
         return extension;
     }
 }

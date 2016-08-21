@@ -122,11 +122,11 @@ public class FlockingRoomsPositioner implements TickWiseOperator {
                 .map(rec1 -> {
                     //push torwards rec1 above,below,left or right
                     Vector2 roomDims = new Vector2(
-                            (rec.width() + rec1.width()) / 2f,
-                            (rec.height() + rec1.height()) / 2f);
+                            (rec.width() + rec1.width()) / 2,
+                            (rec.height() + rec1.height()) / 2);
                     Vector2 direction = rec1.minusPos(rec);
-                    Vector2 targetPosition = roomDims.point(new Vector2(Math.signum(direction.x),
-                            Math.signum(direction.y)))
+                    Vector2 targetPosition = roomDims.point(new Vector2(direction.x > 0 ? 1 : -1,
+                            direction.y > 0 ? 1 : 0))
                             .plus(rec1.x(), rec1.y());
                     Vector2 targetDirection = targetPosition.minus(rec.x(), rec.y());
                     return targetDirection.times(ALPHA * factor);

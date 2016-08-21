@@ -9,16 +9,16 @@ import java.io.Serializable;
  * aaah the rectangle class, an evergreen.
  */
 public class Rectangle implements Serializable {
-    private float x, y;
-    private float xMin, yMin, xMax, yMax;
+    private int x, y;
+    private int xMin, yMin, xMax, yMax;
 
-    private float xVel;
-    private float yVel;
+    private int xVel;
+    private int yVel;
 
     public Rectangle() {
     }
 
-    public Rectangle(float xMin, float yMin, float xMax, float yMax) {
+    public Rectangle(int xMin, int yMin, int xMax, int yMax) {
         this();
         this.xMin = xMin;
         this.yMin = yMin;
@@ -43,7 +43,7 @@ public class Rectangle implements Serializable {
         yVel = 0;
     }
 
-    public float intersectionArea(Rectangle r) {
+    public int intersectionArea(Rectangle r) {
         if (intersects(r)) {
             return intersection(r).area();
         }
@@ -62,7 +62,7 @@ public class Rectangle implements Serializable {
         return r.xMax >= xMin && r.xMin <= xMax && r.yMax >= yMin && r.yMin <= yMax;
     }
 
-    public float area() {
+    public int area() {
         return (xMax - xMin) * (yMax - yMin);
     }
 
@@ -121,35 +121,35 @@ public class Rectangle implements Serializable {
         return new Rectangle(xMin, yMin, xMax, yMax);
     }
 
-    public float width() {
+    public int width() {
         return xMax - xMin;
     }
 
-    public float height() {
+    public int height() {
         return yMax - yMin;
     }
 
-    public float xMin() {
+    public int xMin() {
         return xMin;
     }
 
-    public float xMax() {
+    public int xMax() {
         return xMax;
     }
 
-    public float yMin() {
+    public int yMin() {
         return yMin;
     }
 
-    public float yMax() {
+    public int yMax() {
         return yMax;
     }
 
-    public float x() {
+    public int x() {
         return x;
     }
 
-    public float y() {
+    public int y() {
         return y;
     }
 
@@ -164,18 +164,18 @@ public class Rectangle implements Serializable {
     }
 
     public void scale(float xRatio, float yRatio) {
-        xMin = x - (x - xMin) * xRatio;
-        xMax = x + (xMax - x) * xRatio;
+        xMin = (int) (x - (x - xMin) * xRatio);
+        xMax = (int) (x + (xMax - x) * xRatio);
 
-        yMin = y - (y - yMin) * yRatio;
-        yMax = y + (yMax - y) * yRatio;
+        yMin = (int) (y - (y - yMin) * yRatio);
+        yMax = (int) (y + (yMax - y) * yRatio);
 
     }
 
 
-    public static Rectangle fromCenter(float xCenter, float yCenter, float width, float height) {
-        return new Rectangle(xCenter - width / 2f, yCenter - height / 2f,
-                xCenter + width / 2f, yCenter + height / 2f
+    public static Rectangle fromCenter(int xCenter, int yCenter, int width, int height) {
+        return new Rectangle(xCenter - width / 2, yCenter - height / 2,
+                xCenter + width / 2, yCenter + height / 2
         );
     }
 
@@ -186,19 +186,23 @@ public class Rectangle implements Serializable {
 
         Rectangle rectangle = (Rectangle) o;
 
-        if (Float.compare(rectangle.xMin, xMin) != 0) return false;
-        if (Float.compare(rectangle.yMin, yMin) != 0) return false;
-        if (Float.compare(rectangle.xMax, xMax) != 0) return false;
-        return Float.compare(rectangle.yMax, yMax) == 0;
+        if (rectangle.xMin != xMin) return false;
+        if (rectangle.yMin != yMin) return false;
+        if (rectangle.xMax != xMax) return false;
+        return rectangle.yMax != yMax;
 
     }
 
     @Override
     public int hashCode() {
-        int result = (xMin != +0.0f ? Float.floatToIntBits(xMin) : 0);
-        result = 31 * result + (yMin != +0.0f ? Float.floatToIntBits(yMin) : 0);
-        result = 31 * result + (xMax != +0.0f ? Float.floatToIntBits(xMax) : 0);
-        result = 31 * result + (yMax != +0.0f ? Float.floatToIntBits(yMax) : 0);
+        int result = x;
+        result = 31 * result + y;
+        result = 31 * result + xMin;
+        result = 31 * result + yMin;
+        result = 31 * result + xMax;
+        result = 31 * result + yMax;
+        result = 31 * result + xVel;
+        result = 31 * result + yVel;
         return result;
     }
 }

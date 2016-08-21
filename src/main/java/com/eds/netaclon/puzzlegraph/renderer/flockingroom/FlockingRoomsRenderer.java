@@ -16,15 +16,15 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
     private final BufferedImage image;
     private final Graphics2D g;
     private Rectangle view;
-    private final float height = 600, width = 800;
+    private final int height = 600, width = 800;
     private final Map<String, Rectangle> rectsByRoom;
     private final GraphicPuzzle graphicPuzzle;
 
 
     public FlockingRoomsRenderer(GraphicPuzzle gp, TickWiseOperator... operators) {
-        super(gp,operators);
+        super(gp, operators);
         this.rectsByRoom = gp.getRectsByRoom();
-        this.graphicPuzzle  =gp;
+        this.graphicPuzzle = gp;
         //    this.view = new Rectangle(0, 0, width, height);
 
         image = new BufferedImage((int) width, (int) height, BufferedImage.TYPE_INT_ARGB);
@@ -54,14 +54,14 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
             }
 
         } catch (Exception e) {
-            System.out.println("colors");
+            throw new RuntimeException(e);
         }
 
     }
 
     private void updateImage(ImageShow imageShow) {
         centerCamera();
-        g.clearRect(0, 0, (int) width, (int) height);
+        g.clearRect(0, 0, width, height);
 
         drawGrid();
 
@@ -86,23 +86,23 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
 
 
     private void drawRectangle(Graphics2D g, Rectangle r, Color color) {
-        final float xMin = transformX(r.xMin());
-        final float xMax = transformX(r.xMax());
-        final float yMin = transformY(r.yMin());
-        final float yMax = transformY(r.yMax());
+        final int xMin = transformX(r.xMin());
+        final int xMax = transformX(r.xMax());
+        final int yMin = transformY(r.yMin());
+        final int yMax = transformY(r.yMax());
         g.setColor(color);
         g.drawRect(rnd(xMin), rnd(yMin), Math.max(rnd(xMax - xMin), 1), Math.max(rnd(yMax - yMin), 1));
     }
 
-    private float transformY(float y) {
-        return (y - view.yMin()) / (view.yMax() - view.yMin()) * height;
+    private int transformY(int y) {
+        return (int) (((float) y - view.yMin()) / (view.yMax() - view.yMin()) * height);
     }
 
-    private float transformX(float x) {
-        return (x - view.xMin()) / (view.xMax() - view.xMin()) * width;
+    private int transformX(int x) {
+        return (int) (((float) x - view.xMin()) / (view.xMax() - view.xMin()) * width);
     }
 
-    private int rnd(float value) {
+    private int rnd(int value) {
         return (int) value;
     }
 
@@ -117,12 +117,14 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
             }
         }
         //view must have the same aspect ratio of the window.
-        float viewRatio = view.width() / view.height();
-        float windowRatio = width / height;
-        if (viewRatio < windowRatio) {   //width must become larger
-            view.scale(windowRatio / viewRatio, 1);
-        } else {   //height must become larger
-            view.scale(1, windowRatio / viewRatio);
+        float viewRatio = (float) view.width() / view.height();
+        float windowRatio = (float) width / height;
+        if (viewRatio != 0) {
+            if (viewRatio < windowRatio) {   //width must become larger
+                view.scale(windowRatio / viewRatio, 1);
+            } else {   //height must become larger
+                view.scale(1, windowRatio / viewRatio);
+            }
         }
 
         return view;
@@ -131,17 +133,17 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
 
     private void drawGrid() {
         g.setColor(Color.darkGray);
-        float xStart = Math.round(view.xMin());
-        float xEnd = Math.round(view.xMax());
-        for (float col = xStart; col <= xEnd; col++) {
-            float transCol = transformX(col);
+        int xStart = Math.round(view.xMin());
+        int xEnd = Math.round(view.xMax());
+        for (int col = xStart; col <= xEnd; col++) {
+            int transCol = transformX(col);
             g.drawLine(rnd(transCol), 0, rnd(transCol), rnd(height));
         }
 
-        float yStart = Math.round(view.yMin());
-        float yEnd = Math.round(view.yMax());
-        for (float row = yStart; row <= yEnd; row++) {
-            float transRow = transformY(row);
+        int yStart = Math.round(view.yMin());
+        int yEnd = Math.round(view.yMax());
+        for (int row = yStart; row <= yEnd; row++) {
+            int transRow = transformY(row);
             g.drawLine(0, rnd(transRow), rnd(width), rnd(transRow));
         }
 
@@ -158,25 +160,25 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
     private void centerCamera() {
         Rectangle center = determineView();
         if (view == null) {
-            view = Rectangle.fromCenter(center.x(), center.y(), center.width(), center.height());
+            view = Rectangle.fromCenter(center.x(), center.y(), center.width() * 5, center.height() * 5);
         } else {
             view.push(new Vector2(center.x(), center.y()).minus(new Vector2(view.x(), view.y())).times(.2f));
             view.move();
         }
-        float widthRatio = (center.width() + 10) / view.width();
-        float heightRation = (center.height() + 10) / view.height();
+        float widthRatio = (center.width() + 10f) / view.width();
+        float heightRation = (center.height() + 10f) / view.height();
         float ratio = widthRatio < heightRation ? heightRation : widthRatio;
-        view.scale(ratio / 5f + 4 / 5f);
+        view.scale(ratio/* * .2f + .8f*/);
     }
 
     private void drawDoor(Graphics2D g, Door door) {
         Rectangle rec1 = rectsByRoom.get(door.getInRoomName());
         Rectangle rec2 = rectsByRoom.get(door.getOutRoomName());
         if (rec1 != null && rec2 != null)
-        g.drawLine(rnd(transformX(rec1.x()))
-                , rnd(transformY(rec1.y()))
-                , rnd(transformX(rec2.x()))
-                , rnd(transformY(rec2.y())));
+            g.drawLine(rnd(transformX(rec1.x()))
+                    , rnd(transformY(rec1.y()))
+                    , rnd(transformX(rec2.x()))
+                    , rnd(transformY(rec2.y())));
     }
 
 }

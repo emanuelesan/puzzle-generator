@@ -47,14 +47,14 @@ public class DoorCreator implements TickWiseOperator {
 
         Rectangle doorRect;
         if (intersection.height() > intersection.width()) {
-            doorRect = Rectangle.fromCenter((int) (intersection.x()),
-                    (float) (Math.floor(intersection.y()) + .5f),
+            doorRect = Rectangle.fromCenter(intersection.x(),
+                    intersection.y(),
                     doorLength, doorWidth);
         }
         else
         {
-            doorRect = Rectangle.fromCenter((float) (Math.floor(intersection.x()) + .5f),
-                    (int) (intersection.y()), doorWidth, doorLength);
+            doorRect = Rectangle.fromCenter((intersection.x()),
+                    intersection.y(), doorWidth, doorLength);
         }
         gp.add(door,doorRect);
     }

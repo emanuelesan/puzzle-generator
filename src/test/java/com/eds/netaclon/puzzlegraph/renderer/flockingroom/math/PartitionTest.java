@@ -16,7 +16,7 @@ public class PartitionTest {
 
     @Test
     public void testExcludeIntersectsFully() throws Exception {
-        Partition east = new Partition(0, 0, Float.NaN, 1);
+        Partition east = new Partition(0, 0, Partition.A_LOT, 1);
         Partition excluded = east.exclude(new Rectangle(2, -1, 3, 2));
         Assert.assertEquals(0, excluded.getMinK().x, Float.MIN_VALUE);
         Assert.assertEquals(0, excluded.getMinK().y, Float.MIN_VALUE);
@@ -28,7 +28,7 @@ public class PartitionTest {
 
     @Test
     public void testExcludeIntersectsPartially() throws Exception {
-        Partition east = new Partition(0, 0, Float.NaN, 2);
+        Partition east = new Partition(0, 0, Partition.A_LOT, 2);
         Partition excluded = east.exclude(new Rectangle(2, 1, 3, 2));
         Assert.assertEquals(0, excluded.getMinK().x, Float.MIN_VALUE);
         Assert.assertEquals(0, excluded.getMinK().y, Float.MIN_VALUE);
@@ -40,7 +40,7 @@ public class PartitionTest {
 
     @Test
     public void testExcludeOnlyAdjacent() throws Exception {
-        Partition east = new Partition(0, 0, Float.NaN, 2);
+        Partition east = new Partition(0, 0, Partition.A_LOT, 2);
         Partition excluded = east.exclude(new Rectangle(2, 2, 3, 4));
         Assert.assertEquals(0, excluded.getMinK().x, Float.MIN_VALUE);
         Assert.assertEquals(0, excluded.getMinK().y, Float.MIN_VALUE);
@@ -52,7 +52,7 @@ public class PartitionTest {
 
     @Test
     public void testExcludeNotEvenClose() throws Exception {
-        Partition east = new Partition(0, 0, Float.NaN, 2);
+        Partition east = new Partition(0, 0, Partition.A_LOT, 2);
         Partition excluded = east.exclude(new Rectangle(2, 20, 3, 24));
         Assert.assertEquals(0, excluded.getMinK().x, Float.MIN_VALUE);
         Assert.assertEquals(0, excluded.getMinK().y, Float.MIN_VALUE);
@@ -65,7 +65,7 @@ public class PartitionTest {
 
     @Test
     public void testExcludePartial() throws Exception {
-        Partition east = new Partition(0, 0, Float.NaN, 8);
+        Partition east = new Partition(0, 0, Partition.A_LOT, 8);
         Partition excluded = east.exclude(new Rectangle(0, 6, 3, 10));
         Assert.assertEquals(Partition.A_LOT, excluded.getExtension(), Float.MIN_VALUE);
 
@@ -78,7 +78,7 @@ public class PartitionTest {
 
     @Test
     public void testExcludeLyingOnTwoSides() throws Exception {
-        Partition east = new Partition(0, 0, Float.NaN, 8);
+        Partition east = new Partition(0, 0, Partition.A_LOT, 8);
         Partition excluded = east.exclude(new Rectangle(0, 6, 3, 7));
         Assert.assertEquals(Partition.A_LOT, excluded.getExtension(), Float.MIN_VALUE);
 
@@ -91,7 +91,7 @@ public class PartitionTest {
 
     @Test
     public void testExcludeCompletelyBlocking() throws Exception {
-        Partition east = new Partition(0, 0, Float.NaN, 8);
+        Partition east = new Partition(0, 0, Partition.A_LOT, 8);
         Assert.assertEquals(0, east.getMinK().x, Float.MIN_VALUE);
         Assert.assertEquals(0, east.getMinK().y, Float.MIN_VALUE);
         Assert.assertEquals(0, east.getMaxK().x, Float.MIN_VALUE);

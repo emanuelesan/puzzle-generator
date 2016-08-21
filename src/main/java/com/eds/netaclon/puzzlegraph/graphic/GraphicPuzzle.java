@@ -53,8 +53,8 @@ public class GraphicPuzzle {
         Rectangle inRect = rectsByRoom.get(door.getInRoom(puzzle).getName());
         Rectangle outRect = rectsByRoom.get(door.getOutRoom(puzzle).getName());
         Vector2 roomDims = new Vector2(
-                (inRect.width() + outRect.width()) / 2f,
-                (inRect.height() + outRect.height()) / 2f);
+                (inRect.width() + outRect.width()) / 2,
+                (inRect.height() + outRect.height()) / 2);
         Vector2 distance =
                 new Vector2(
                         Math.abs(inRect.x() - outRect.x()),
