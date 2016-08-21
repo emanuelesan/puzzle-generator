@@ -15,7 +15,7 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
 
     private final BufferedImage image;
     private final Graphics2D g;
-    private final Rectangle view;
+    private Rectangle view;
     private final float height = 600, width = 800;
     private final Map<String, Rectangle> rectsByRoom;
     private final GraphicPuzzle graphicPuzzle;
@@ -25,7 +25,7 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
         super(gp,operators);
         this.rectsByRoom = gp.getRectsByRoom();
         this.graphicPuzzle  =gp;
-        this.view = new Rectangle(0, 0, width, height);
+        //    this.view = new Rectangle(0, 0, width, height);
 
         image = new BufferedImage((int) width, (int) height, BufferedImage.TYPE_INT_ARGB);
         g = (Graphics2D) image.getGraphics();
@@ -50,7 +50,7 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
                     updateImage(imageShow);
                     lastRender = System.currentTimeMillis();
                 }
-//                Thread.sleep(16);
+                Thread.sleep(100);
             }
 
         } catch (Exception e) {
@@ -66,10 +66,12 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
         drawGrid();
 
         rectsByRoom.entrySet().forEach(entry -> drawRectangle(g, entry.getValue(), colorOf(entry.getKey())));
+        graphicPuzzle.getRectsByItem().entrySet().forEach(entry -> drawRectangle(g, entry.getValue(), Color.LIGHT_GRAY));
         g.setColor(Color.ORANGE);
         puz.getDoorMap().values()
                 .forEach(door -> drawDoor(g, door));
         graphicPuzzle.getRectsByDoor().values().forEach(room -> drawRectangle(g, room, Color.CYAN));
+
 
         drawRoomNames(g);
 
@@ -155,13 +157,16 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
 
     private void centerCamera() {
         Rectangle center = determineView();
-
-        view.push(new Vector2(center.x(), center.y()).minus(new Vector2(view.x(), view.y())).times(.1f));
-        view.move();
-        float widthRatio = (center.width() + 4) / view.width();
-        float heightRation = (center.height() + 4) / view.height();
+        if (view == null) {
+            view = Rectangle.fromCenter(center.x(), center.y(), center.width(), center.height());
+        } else {
+            view.push(new Vector2(center.x(), center.y()).minus(new Vector2(view.x(), view.y())).times(.2f));
+            view.move();
+        }
+        float widthRatio = (center.width() + 10) / view.width();
+        float heightRation = (center.height() + 10) / view.height();
         float ratio = widthRatio < heightRation ? heightRation : widthRatio;
-        view.scale(ratio);
+        view.scale(ratio / 5f + 4 / 5f);
     }
 
     private void drawDoor(Graphics2D g, Door door) {

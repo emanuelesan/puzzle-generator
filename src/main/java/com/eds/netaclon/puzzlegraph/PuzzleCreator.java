@@ -8,6 +8,7 @@ import com.eds.netaclon.puzzlegraph.plotseed.impl.LockedDoorPlot;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.FlockingRoomsRenderer;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.GraphicPuzzleProcessor;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.DoorCreator;
+import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.ItemPositioner;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.RecursivePositioner;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperator;
 
@@ -60,17 +61,11 @@ public class PuzzleCreator {
 
         Random rand = new Random(26);//31
 
-        Puzzle puz = createPuzzleGraph(rand, 30);
+        Puzzle puz = createPuzzleGraph(rand, 10);
         logger.finer(puz.printInfo());
         GraphicPuzzle graphicPuzzle = new GraphicPuzzle(puz, 26);
 
-        TickWiseOperator[] operators = new TickWiseOperator[]{
-                new RecursivePositioner(graphicPuzzle)
-
-                //   , new FlockingRoomsPositioner(graphicPuzzle)
-                //    , new Clamper(graphicPuzzle)
-                , new DoorCreator(graphicPuzzle)
-        };
+        TickWiseOperator[] operators = currentTickWiseOperators(graphicPuzzle);
 
         graphicProcessing(graphicPuzzle, operators);
 
@@ -91,19 +86,21 @@ public class PuzzleCreator {
             Puzzle puz = createPuzzleGraph(rand, complexity);
             logger.finer(puz.printInfo());
             GraphicPuzzle graphicPuzzle = new GraphicPuzzle(puz, seed);
-            TickWiseOperator[] operators = new TickWiseOperator[]{
-                    //new InitialPositioner(graphicPuzzle)
-                    new RecursivePositioner(graphicPuzzle)
-                    //  , new FlockingRoomsPositioner(graphicPuzzle)
-                    //  , new Clamper(graphicPuzzle)
-                    , new DoorCreator(graphicPuzzle)
-
-            };
+            TickWiseOperator[] operators = currentTickWiseOperators(graphicPuzzle);
             GraphicPuzzleProcessor graphicPuzzleProcessor = new GraphicPuzzleProcessor(graphicPuzzle, operators, mode.getFunction());
 
             if (graphicPuzzleProcessor.execute())
                 return graphicPuzzle;
         } while (true);
+    }
+
+    private static TickWiseOperator[] currentTickWiseOperators(GraphicPuzzle graphicPuzzle) {
+        return new TickWiseOperator[]{
+                new RecursivePositioner(graphicPuzzle)
+                , new DoorCreator(graphicPuzzle)
+                , new ItemPositioner(graphicPuzzle)
+
+        };
     }
 
     private static void graphicProcessing(GraphicPuzzle gp, TickWiseOperator... operators) {

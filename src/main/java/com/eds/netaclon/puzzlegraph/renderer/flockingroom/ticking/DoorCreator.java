@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 public class DoorCreator implements TickWiseOperator {
     private static final Logger logger = Logger.getLogger("logger");
 
+    private final static int doorWidth = 3, doorLength = 4;
     private final GraphicPuzzle gp;
     private boolean done = false;
 
@@ -48,12 +49,12 @@ public class DoorCreator implements TickWiseOperator {
         if (intersection.height() > intersection.width()) {
             doorRect = Rectangle.fromCenter((int) (intersection.x()),
                     (float) (Math.floor(intersection.y()) + .5f),
-                    2, 1);
+                    doorLength, doorWidth);
         }
         else
         {
             doorRect = Rectangle.fromCenter((float) (Math.floor(intersection.x()) + .5f),
-                    (int) (intersection.y()), 1, 2);
+                    (int) (intersection.y()), doorWidth, doorLength);
         }
         gp.add(door,doorRect);
     }

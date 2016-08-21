@@ -14,7 +14,7 @@ public class GraphicPuzzle {
     private final long seed;
     private Puzzle puzzle;
     private Map<String, Rectangle> rectsByRoom;
-    private Map<String, Rectangle> rectsByItems;
+    private Map<String, Rectangle> rectsByItem;
     private Map<String, Rectangle> rectsByDoor;
 
 
@@ -22,6 +22,7 @@ public class GraphicPuzzle {
         this.puzzle = puz;
         rectsByRoom = new HashMap<>();
         rectsByDoor = new HashMap<>();
+        rectsByItem = new HashMap<>();
         this.seed = seed;
 
     }
@@ -104,6 +105,10 @@ public class GraphicPuzzle {
 
     public long getSeed() {
         return seed;
+    }
+
+    public Map<String, Rectangle> getRectsByItem() {
+        return rectsByItem;
     }
 
 
