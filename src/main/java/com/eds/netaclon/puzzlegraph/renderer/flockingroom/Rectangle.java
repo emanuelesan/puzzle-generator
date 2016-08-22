@@ -174,8 +174,10 @@ public class Rectangle implements Serializable {
 
 
     public static Rectangle fromCenter(int xCenter, int yCenter, int width, int height) {
-        return new Rectangle(xCenter - width / 2, yCenter - height / 2,
-                xCenter + width / 2, yCenter + height / 2
+        int xmin = xCenter - width / 2;
+        int ymin = yCenter - height / 2;
+        return new Rectangle(xmin, ymin,
+                xmin + width, ymin + height
         );
     }
 

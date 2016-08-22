@@ -61,7 +61,7 @@ public class RecursivePositioner implements TickWiseOperator {
         valid = graphicPuzzle.getRectsByRoom().values().size() == graphicPuzzle.getPuzzle().allRooms().size();
 //        logger.info("valid? " + valid);
 //        logger.info("steps : " + stepCounter.get());
-        done = steps() > 1000000 || stack.isEmpty();
+        done = stack.isEmpty();
     }
 
     /**

@@ -17,6 +17,19 @@ import java.util.logging.Logger;
  */
 public class PuzzleCreatorTest {
     @Test
+    public void testCreatePuzzle() throws Exception {
+        double durations = 0;
+        int iterations = 100;
+        for (int i = 0; i < iterations; i++) {
+            Instant start = Instant.now();
+            PuzzleCreator.createPuzzle(20);
+            Duration duration = Duration.between(start, Instant.now());
+            durations += duration.toMillis();
+        }
+        logger.info("duration : " + durations / iterations);
+    }
+
+    @Test
     @Ignore
     public void testMainCall() throws Exception {
         Instant start = Instant.now();

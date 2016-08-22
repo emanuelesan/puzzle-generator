@@ -50,7 +50,7 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
                     updateImage(imageShow);
                     lastRender = System.currentTimeMillis();
                 }
-                Thread.sleep(100);
+                //    Thread.sleep(100);
             }
 
         } catch (Exception e) {

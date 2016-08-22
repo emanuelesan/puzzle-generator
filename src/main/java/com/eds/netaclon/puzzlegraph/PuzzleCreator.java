@@ -22,8 +22,8 @@ import java.util.logging.Logger;
 public class PuzzleCreator {
     private static final Logger logger = Logger.getLogger("logger");
 
-    private static enum Mode {
-        RESTART_IF_TOO_SLOW(operator -> operator.steps() > operator.averageSteps() * 1.3), ALL_THE_WAY_TO_FINISH(i -> false);
+    public enum Mode {
+        RESTART_IF_TOO_SLOW(operator -> operator.steps() > operator.averageSteps()), ALL_THE_WAY_TO_FINISH(i -> false);
 
         private final Function<TickWiseOperator, Boolean> isTakingTooMuch;
 
@@ -32,9 +32,33 @@ public class PuzzleCreator {
 
         }
 
-        public Function<TickWiseOperator, Boolean> getFunction() {
+        public Function<TickWiseOperator, Boolean> isTakingTooMuch() {
             return isTakingTooMuch;
         }
+    }
+
+
+    public static GraphicPuzzle createPuzzle(int complexity) {
+        return createPuzzle(complexity, Mode.RESTART_IF_TOO_SLOW);
+    }
+
+    /**
+     * tries n times to create a graphical puzzle. if not, it will throw an happy wtf exception.
+     */
+    public static GraphicPuzzle createPuzzle(int complexity, Mode mode) {
+        do {
+            long seed = (long) (Math.random() * 1000000);
+            Random rand = new Random(seed);
+
+            Puzzle puz = createPuzzleGraph(rand, complexity);
+            logger.finer(puz.printInfo());
+            GraphicPuzzle graphicPuzzle = new GraphicPuzzle(puz, seed);
+            TickWiseOperator[] operators = currentTickWiseOperators(graphicPuzzle);
+            GraphicPuzzleProcessor graphicPuzzleProcessor = new GraphicPuzzleProcessor(graphicPuzzle, operators, mode.isTakingTooMuch());
+
+            if (graphicPuzzleProcessor.execute())
+                return graphicPuzzle;
+        } while (true);
     }
 
     private final List<PlotSeeder> seedBag;
@@ -71,28 +95,6 @@ public class PuzzleCreator {
 
     }
 
-    public static GraphicPuzzle createPuzzle(int complexity) {
-        return createPuzzle(complexity, Mode.ALL_THE_WAY_TO_FINISH);
-    }
-
-    /**
-     * tries n times to create a graphical puzzle. if not, it will throw an happy wtf exception.
-     */
-    public static GraphicPuzzle createPuzzle(int complexity, Mode mode) {
-        do {
-            long seed = (long) (Math.random() * 1000000);
-            Random rand = new Random(seed);
-
-            Puzzle puz = createPuzzleGraph(rand, complexity);
-            logger.finer(puz.printInfo());
-            GraphicPuzzle graphicPuzzle = new GraphicPuzzle(puz, seed);
-            TickWiseOperator[] operators = currentTickWiseOperators(graphicPuzzle);
-            GraphicPuzzleProcessor graphicPuzzleProcessor = new GraphicPuzzleProcessor(graphicPuzzle, operators, mode.getFunction());
-
-            if (graphicPuzzleProcessor.execute())
-                return graphicPuzzle;
-        } while (true);
-    }
 
     private static TickWiseOperator[] currentTickWiseOperators(GraphicPuzzle graphicPuzzle) {
         return new TickWiseOperator[]{

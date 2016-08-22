@@ -31,8 +31,7 @@ public class GraphicPuzzleProcessor {
     }
 
     public boolean execute() {
-        while(!processingStep()) {
-        }
+        while (!processingStep()) ;
         logger.finer("finished!!");
         return correct;
 
@@ -43,6 +42,7 @@ public class GraphicPuzzleProcessor {
          TickWiseOperator currentOperator = operators.peek();
          currentOperator.tick();
          if (terminationFunction.apply(currentOperator)) {
+             logger.fine("puzzle creation failed.");
              correct = false;
              return true;
          }
@@ -52,6 +52,7 @@ public class GraphicPuzzleProcessor {
                 if (currentOperator.isPuzzleStillValid())
                     operators.poll();
                 else {
+                    logger.fine("puzzle creation failed.");
                     correct = false;
                     return true;
 
