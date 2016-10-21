@@ -12,6 +12,8 @@ public class Puzzle {
 	private static final String KEY = "key";
 	private static final String CONTAINER = "container";
 	private static final String ROOM = "room";
+	public static final String START = "Start";
+	public static final String END = "End";
 
 
 	private final Map<String, Room> roomMap;
@@ -41,8 +43,8 @@ public class Puzzle {
 		items.add(containerMap);
 		items.add(keyMap);
 
-		start = new Room("Start");
-		end = new Room("End");
+		start = new Room(START);
+		end = new Room(END);
 		Door firstDoor =connectInwardRoom(start,end);
 		start.setPathToEnd(firstDoor);
 		roomMap.put(start.getName(), start);

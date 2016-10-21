@@ -26,12 +26,12 @@ public class RecursivePositioner implements TickWiseOperator {
     private static final Logger logger = Logger.getLogger("logger");
 
     private static final int maxX = 16, maxY = 12;
-    private static final int minX = 12, minY = 8;
+    private static final int minX = 6, minY = 6;
     private final Random random;
     private final Set<String> allRoomNames;
 
     private GraphicPuzzle graphicPuzzle;
-    boolean done = false;
+    private boolean done = false;
     private boolean valid = true;
     private AtomicInteger stepCounter = new AtomicInteger(0);
 
@@ -118,13 +118,14 @@ public class RecursivePositioner implements TickWiseOperator {
                 .collect(Collectors.toList());
 
 
-        params.possibleRects = createPossiblePositions(params.connectedRooms);
+        params.possibleRects = createPossiblePositions(params);
 
         params.roomsToBePut = new HashSet<>(allRoomNames);
         params.roomsToBePut.removeAll(roomShapeByName.keySet());
     }
 
-    private Iterator<Rectangle> createPossiblePositions(List<String> connectedRooms) {
+    private Iterator<Rectangle> createPossiblePositions(RecursionStepParam params) {
+        List<String> connectedRooms = params.connectedRooms;
         Stream<Rectangle> possibleRects;
 
         List<PartitionCollection> possibleAreas = connectedRooms
@@ -142,7 +143,13 @@ public class RecursivePositioner implements TickWiseOperator {
             possibleRects = intersection.partitions().stream()
                     .map(part -> excluderooms(part, roomShapeByName))
                     .filter(part -> !part.isDegenerate())
-                    .flatMap(sp -> sp.complete(generateX(), generateY()))
+                    .flatMap(sp ->
+                            {
+                                if (params.currentRoom.getItemNames().size() > 0)
+                                    return sp.complete(generateX(), generateY());
+                                return random.nextBoolean() ? sp.complete(minX, maxY) : sp.complete(maxY, minX);
+                            }
+                    )
                     .filter(RecursivePositioner::isWideAndHighEnough)
                     .sorted((r1, r2) -> random.nextInt(2) - 1);
         }
@@ -161,6 +168,7 @@ public class RecursivePositioner implements TickWiseOperator {
     }
 
     private int generateX() {
+
         return random.nextInt(maxX - minX) + minX;
 
     }

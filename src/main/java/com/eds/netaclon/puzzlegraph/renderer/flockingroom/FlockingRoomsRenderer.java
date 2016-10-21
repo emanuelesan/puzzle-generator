@@ -6,9 +6,13 @@ import com.eds.netaclon.puzzlegraph.renderer.ImageShow;
 import com.eds.netaclon.puzzlegraph.renderer.Visualizer;
 import com.eds.netaclon.puzzlegraph.renderer.flockingroom.ticking.TickWiseOperator;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Visualizer {
@@ -48,13 +52,25 @@ public class FlockingRoomsRenderer extends GraphicPuzzleProcessor implements Vis
 
                 if (System.currentTimeMillis() > lastRender + 16) {
                     updateImage(imageShow);
+                    //  saveImage();
                     lastRender = System.currentTimeMillis();
                 }
-                //    Thread.sleep(100);
+                //   Thread.sleep(100);
             }
 
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+
+    }
+
+    static final AtomicInteger frameCounter = new AtomicInteger(100000);
+
+    private void saveImage() {
+        try {
+            ImageIO.write(image, "png", new File("./img" + frameCounter.incrementAndGet() + ".png"));
+        } catch (IOException e) {
+
         }
 
     }

@@ -1,10 +1,8 @@
 package com.eds.netaclon.puzzlegraph.renderer;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -13,13 +11,6 @@ import java.io.IOException;
 public class ImageShow  {
         private JFrame frame;
 
-        public static void main(String avg[]) throws IOException
-        {
-            BufferedImage img= ImageIO.read(new File("f://images.jpg"));
-            ImageShow abc=new ImageShow(img);
-            abc.show();
-
-        }
 
         public ImageShow(BufferedImage img) throws IOException
         {
